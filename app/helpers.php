@@ -19,3 +19,20 @@ if (!function_exists('format_date')) {
         return $value ? Carbon::parse($value)->format('d.m.Y') : null;
     }
 }
+
+if (!function_exists('mask_phone_old')) {
+    function mask_phone_old ($phone) : string {
+        $splitPhone = str_split($phone);
+        $output = "+7 ";
+        foreach ($splitPhone as $key => $item) {
+            if ($key === 8 || $key == 5) {
+                $output .= " ";
+            }
+            if ($key === 10) {
+                $output .= "-";
+            }
+            $output .= $item;
+        }
+        return $output;
+    }
+}

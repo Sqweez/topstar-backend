@@ -17,7 +17,9 @@ class CreateTableRoleUser extends Migration
             $table->foreignId('user_id');
             $table->foreign('user_id')
                 ->references('id')
-                ->on('users');
+                ->on('users')
+                ->onDelete('cascade');
+            ;
             $table->foreignId('role_id');
             $table->foreign('role_id')
                 ->references('id')

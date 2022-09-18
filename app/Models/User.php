@@ -93,7 +93,7 @@ class User extends Authenticatable implements JWTSubject, HasMedia
      *
      * @var array<int, string>
      */
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     protected $hidden = [
         'password',

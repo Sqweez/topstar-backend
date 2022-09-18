@@ -21,7 +21,7 @@ class CreateClientsTable extends Migration
             $table->text('description')->nullable();
             $table->integer('balance')->default(0);
             $table->date('birth_date');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('club_id')->default(null);
             $table->timestamps();
         });

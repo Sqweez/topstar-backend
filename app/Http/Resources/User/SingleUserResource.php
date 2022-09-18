@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\User;
 
+use App\Models\Client;
 use App\Models\User;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
@@ -27,7 +28,7 @@ class SingleUserResource extends JsonResource
             'club' => $this->club,
             'position' => $this->string_role,
             'login' => $this->login,
-            'photo' => $this->getFirstMediaUrl(),
+            'photo' => $this->getFirstMediaUrl(Client::MEDIA_AVATAR),
             'phone' => $this->phone,
             'birth_date' => $this->birth_date_formatted,
             'pass' => $this->pass->code ?? '',
