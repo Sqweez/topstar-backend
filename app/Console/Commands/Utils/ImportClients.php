@@ -68,9 +68,13 @@ class ImportClients extends Command
             $_client->pass()->save($pass);
             if ($client->photo) {
                 $this->line($client->photo);
-                $_client
-                    ->addMediaFromUrl(sprintf("http://top-star.kz/photos/%s", $client->photo))
-                    ->toMediaCollection(\App\Models\Client::MEDIA_AVATAR);;
+                try {
+                    $_client
+                        ->addMediaFromUrl(sprintf("http://top-star.kz/photos/%s", $client->photo))
+                        ->toMediaCollection(\App\Models\Client::MEDIA_AVATAR);;
+                } catch (\Exception $exception) {
+                    \Log::error($exception->getMessage());
+                }
             }
         });
     }
