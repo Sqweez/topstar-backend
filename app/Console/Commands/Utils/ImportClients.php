@@ -40,19 +40,18 @@ class ImportClients extends Command
      * Execute the console command.
      *
      * @return void
-     * @throws GuzzleException
-     * @throws FileCannotBeAdded
      */
     public function handle()
     {
-        \App\Models\Client::truncate();
+      /*  \App\Models\Client::truncate();
         $file = new Filesystem();
-        $file->cleanDirectory('storage/app/public');
+        $file->cleanDirectory('storage/app/public');*/
 
         collect($this->getClients())->each(function ($client) {
             $this->line('Клиент: ' . $client->name);
-            $_client = \App\Models\Client::create([
+            $_client = \App\Models\Client::updateOrCreate([
                 'id' => $client->id,
+            ],[
                 'name' => $client->name,
                 'phone' => mask_phone_old($client->phone),
                 'birth_date' => Carbon::parse($client->datarozhd),
