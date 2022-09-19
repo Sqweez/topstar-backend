@@ -4,11 +4,8 @@ namespace App\Console\Commands\Utils;
 
 use App\Http\Services\PassService;
 use Carbon\Carbon;
-use GuzzleHttp\Exception\GuzzleException;
-use http\Client;
+use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
-use Spatie\MediaLibrary\MediaCollections\Exceptions\FileCannotBeAdded;
 
 class ImportClients extends Command
 {
@@ -49,42 +46,53 @@ class ImportClients extends Command
             $clients = $this->getClients($page);
             $hasClients = count($clients) > 0;
             collect($clients)->each(function ($client) {
-            $this->line('Клиент: ' . $client->name);
+                $this->line('Клиент: ' . $client->name);
 
-            $birth_date = now();
-            try {
-                $birth_date = Carbon::parse($client->datarozhd);
-            } catch (\Exception $exception) {
-                \Log::error($exception->getMessage());
-            }
+                try {
+                    $birth_date = $client->datarozhd !== '0000-00-00' ? Carbon::parse($client->datarozhd): now();
+                } catch (InvalidFormatException $exception) {
+                    \Log::error($exception->getMessage());
+                    $birth_date = now();
+                }
+
+                 try {
+                    $created_at = Carbon::parse($client->datarega);
+                 } catch (InvalidFormatException $exception) {
+                    \Log::error($exception->getMessage());
+                    $created_at = now();
+                }
 
             $_client = \App\Models\Client::updateOrCreate([
                 'id' => $client->id,
             ],[
                 'name' => $client->name,
-                'phone' => mask_phone_old($client->phone),
+                'phone' => '+7' . unmask_phone($client->phone),
                 'birth_date' => $birth_date,
                 'description' => $client->comment,
                 'balance' => $client->balans,
                 'club_id' => str_replace('club', '', $client->club),
                 'user_id' => null,
-                'created_at' => Carbon::parse($client->datarega),
+                'created_at' => $created_at,
                 'gender' => intval($client->pol) === 1 ? 'M' : 'F'
             ]);
 
             $pass = PassService::createPass($client->cardid);
             $_client->pass()->save($pass);
             if ($client->photo) {
-                $this->line($client->photo);
-                try {
-                    $_client
-                        ->addMediaFromUrl(sprintf("http://top-star.kz/photos/%s", $client->photo))
-                        ->toMediaCollection(\App\Models\Client::MEDIA_AVATAR);;
-                } catch (\Exception $exception) {
-                    \Log::error($exception->getMessage());
+                $photoExtension = explode('.', $client->photo)[1];
+                if (in_array($photoExtension, ['jpeg', 'jpg', 'png'])) {
+                    $this->line($client->photo);
+                    try {
+                        $_client
+                            ->addMediaFromUrl(sprintf("http://top-star.kz/photos/%s", $client->photo))
+                            ->toMediaCollection(\App\Models\Client::MEDIA_AVATAR);;
+                    } catch (\Exception $exception) {
+                        \Log::error($exception->getMessage());
+                    }
                 }
             }
         });
+            $this->line('Импортировано: ' . $page * 500);
             $page++;
         }
     }

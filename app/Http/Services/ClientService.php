@@ -26,7 +26,7 @@ class ClientService {
 
     public function updateClient(Client $client, $payload = []): ?Client {
         return DB::transaction(function () use ($client, $payload) {
-            $client->update($payload);
+            $client->update(Arr::except($payload, ['pass', 'photo']));
             if (isset($payload['pass'])) {
                 $client->pass()->delete();
                 $pass = PassService::createPass($payload['pass']);

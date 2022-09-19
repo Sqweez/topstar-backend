@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers\api\v1;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\CreateClientRequest;
 use App\Http\Requests\Client\TopUpClientAccountRequest;
 use App\Http\Requests\Client\UpdateClientRequest;
 use App\Http\Resources\Client\ClientListResource;
 use App\Http\Resources\Client\SingleClientResource;
-use App\Http\Resources\Client\TopUpAccountRequest;
 use App\Http\Services\ClientService;
 use App\Http\Services\TransactionService;
 use App\Models\Client;
-use GuzzleHttp\Promise\Create;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -27,6 +25,29 @@ class ClientController extends ApiController
      */
     public function index(): AnonymousResourceCollection {
         $clients = Client::query()
+            ->with(['club', 'pass', 'active_session.trinket'])
+            ->get();
+        return ClientListResource::collection($clients);
+    }
+
+    public function search(Request $request): AnonymousResourceCollection {
+        $search = $request->get('search');
+        if (!$search) {
+            return ClientListResource::collection([]);
+        }
+        $clients = Client::query()
+            ->where(function (Builder $query) use ($search) {
+                $query
+                    ->where('name', 'like', prepare_search_string($search))
+                    ->orWhere('phone', 'like', prepare_search_string($search))
+                    ->orWhereHas('pass', fn($query) => $query->whereCode($search))
+                    ->orWhereHas('active_session',
+                        fn($query) => $query->whereHas('trinket',
+                            fn ($query) => $query->whereCode($search)
+                        )
+                    )
+                ;
+            })
             ->with(['club', 'pass', 'active_session.trinket'])
             ->get();
         return ClientListResource::collection($clients);

@@ -22,6 +22,7 @@ Route::group([
     Route::apiResource('users', UserController::class);
     // Пополнение баланса
     Route::post('clients/{client}/top-up', [ClientController::class, 'topUpClientAccount']);
+    Route::get('clients/search', [ClientController::class, 'search']);
     Route::apiResource('clients', ClientController::class);
     // Активация купленной услуги
     Route::post('services/activate/{service}', [ServiceController::class, 'activateService']);

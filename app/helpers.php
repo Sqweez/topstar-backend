@@ -36,3 +36,42 @@ if (!function_exists('mask_phone_old')) {
         return $output;
     }
 }
+
+if (!function_exists('prepare_search_string')) {
+    function prepare_search_string($string)
+    {
+        return "%" . strtolower(str_replace(' ', '%', $string)) . "%";
+    }
+}
+
+if (!function_exists('unmask_phone')) {
+    function unmask_phone ($phone) {
+        return str_replace(['(', ')', '-', ' '], '', $phone);
+    }
+}
+
+if (!function_exists('mask_phone')) {
+    function mask_phone ($phone) : string {
+        $splitPhone = str_split($phone);
+        $output = "";
+        foreach ($splitPhone as $key => $item) {
+            if ($key === 5) {
+                $output .= ")";
+            }
+
+            if (in_array($key, [2, 5, 8])) {
+                $output .= " ";
+            }
+
+            if ($key === 10) {
+                $output .= '-';
+            }
+
+            if ($key === 2) {
+                $output .= "(";
+            }
+            $output .= $item;
+        }
+        return $output;
+    }
+}

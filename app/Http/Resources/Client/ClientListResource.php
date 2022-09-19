@@ -22,7 +22,7 @@ class ClientListResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'phone' => $this->phone,
+            'phone' => mask_phone($this->phone),
             'registrar' => $this->registrar->name,
             'club' => $this->club,
             'balance' => $this->balance,
