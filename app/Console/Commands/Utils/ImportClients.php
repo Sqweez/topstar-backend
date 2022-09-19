@@ -43,7 +43,12 @@ class ImportClients extends Command
      */
     public function handle()
     {
-        collect($this->getClients())->each(function ($client) {
+        $hasClients = true;
+        $page = 1;
+        while ($hasClients) {
+            $clients = $this->getClients($page);
+            $hasClients = count($clients) > 0;
+            collect($clients)->each(function ($client) {
             $this->line('Клиент: ' . $client->name);
 
             $birth_date = now();
@@ -80,11 +85,13 @@ class ImportClients extends Command
                 }
             }
         });
+            $page++;
+        }
     }
 
-    private function getClients() {
+    private function getClients($page) {
         $client = new \GuzzleHttp\Client();
-        $response = $client->get('http://top-star.kz/export/export_clients.php');
+        $response = $client->get('http://top-star.kz/export/export_clients.php?page=' . $page);
         return json_decode($response->getBody());
     }
 }
