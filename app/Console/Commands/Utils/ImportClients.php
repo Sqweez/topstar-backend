@@ -43,18 +43,22 @@ class ImportClients extends Command
      */
     public function handle()
     {
-      /*  \App\Models\Client::truncate();
-        $file = new Filesystem();
-        $file->cleanDirectory('storage/app/public');*/
-
         collect($this->getClients())->each(function ($client) {
             $this->line('Клиент: ' . $client->name);
+
+            $birth_date = now();
+            try {
+                $birth_date = Carbon::parse($client->datarozhd);
+            } catch (\Exception $exception) {
+                \Log::error($exception->getMessage());
+            }
+
             $_client = \App\Models\Client::updateOrCreate([
                 'id' => $client->id,
             ],[
                 'name' => $client->name,
                 'phone' => mask_phone_old($client->phone),
-                'birth_date' => Carbon::parse($client->datarozhd),
+                'birth_date' => $birth_date,
                 'description' => $client->comment,
                 'balance' => $client->balans,
                 'club_id' => str_replace('club', '', $client->club),

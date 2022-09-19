@@ -5,13 +5,14 @@ namespace App\Http\Services;
 use App\Models\Client;
 use App\Models\SessionService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class ClientService {
 
     public function createClient($payload = []): ?Client {
         return DB::transaction(function () use ($payload) {
-            $client = Client::create($payload);
+            $client = Client::create(Arr::except($payload, ['pass', 'photo']));
             if (isset($payload['pass'])) {
                 $pass = PassService::createPass($payload['pass']);
                 $client->pass()->save($pass);
