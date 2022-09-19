@@ -29,7 +29,7 @@ class SingleUserResource extends JsonResource
             'position' => $this->string_role,
             'login' => $this->login,
             'photo' => $this->getFirstMediaUrl(Client::MEDIA_AVATAR),
-            'phone' => $this->phone,
+            'phone' => mask_phone($this->phone),
             'birth_date' => $this->birth_date_formatted,
             'pass' => $this->pass->code ?? '',
             'description' => $this->description

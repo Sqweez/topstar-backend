@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Utils;
 
 use App\Models\Client;
+use App\Models\User;
 use Illuminate\Console\Command;
 
 class UnmaskClientsPhone extends Command
@@ -38,7 +39,7 @@ class UnmaskClientsPhone extends Command
      */
     public function handle()
     {
-        Client::chunk(500, function ($clients) {
+        User::chunk(500, function ($clients) {
             $clients->each(function ($client) {
                 $this->line('Updated id: ' . $client->id);
                 $client->update(['phone' => unmask_phone($client->phone)]);

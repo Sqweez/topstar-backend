@@ -47,6 +47,7 @@ class CreateClientRequest extends FormRequest
         $this->merge([
             'user_id' => auth()->id(),
             'birth_date' => Carbon::parse($this->birth_date)->format('y-m-d'),
+            'phone' => unmask_phone($this->phone),
         ]);
     }
 }

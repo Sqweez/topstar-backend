@@ -33,4 +33,10 @@ class UpdateClientRequest extends FormRequest
             'photo' => 'sometimes|file',
         ];
     }
+
+    protected function prepareForValidation() {
+        $this->merge([
+            'phone' => unmask_phone($this->phone),
+        ]);
+    }
 }

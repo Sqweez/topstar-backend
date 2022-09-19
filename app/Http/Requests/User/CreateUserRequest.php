@@ -47,6 +47,7 @@ class CreateUserRequest extends FormRequest
         $this->merge([
             'birth_date' => Carbon::parse($this->birth_date)->format('y-m-d'),
             'password' => $this->password ? \Hash::make($this->password) : Hash::make(Str::random(10)),
+            'phone' => unmask_phone($this->phone),
         ]);
     }
 }
