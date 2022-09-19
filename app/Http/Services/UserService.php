@@ -12,7 +12,7 @@ class UserService {
     /**
      * @throws Throwable
      */
-    public function createUser($payload = []): User {
+    public function createUser($payload = []): ?User {
         return DB::transaction(function () use ($payload) {
             $user = User::create(Arr::except($payload, ['pass']));
             if (isset($payload['pass'])) {

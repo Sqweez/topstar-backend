@@ -91,7 +91,7 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     /**
      * The attributes that are mass assignable.
      */
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     protected $hidden = [
         'password',
