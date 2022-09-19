@@ -5,9 +5,13 @@ namespace App\Http\Services;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class UserService {
 
+    /**
+     * @throws Throwable
+     */
     public function createUser($payload = []): User {
         return DB::transaction(function () use ($payload) {
             $user = User::create(Arr::except($payload, ['pass']));
