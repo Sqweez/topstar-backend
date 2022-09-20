@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * App\Models\Transaction
@@ -40,6 +41,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @mixin \Eloquent
  * @property string|null $description
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereDescription($value)
+ * @property string $transactional_type
+ * @property int $transactional_id
+ * @property-read Model|\Eloquent $transactional
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereTransactionalId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereTransactionalType($value)
  */
 class Transaction extends Model
 {
@@ -76,6 +82,10 @@ class Transaction extends Model
 
     public function club(): BelongsTo {
         return $this->belongsTo(Club::class);
+    }
+
+    public function transactional(): MorphTo {
+        return $this->morphTo(__FUNCTION__, 'transactional_type', 'transactional_id', 'id');
     }
 
     public function getPaymentTypeTextAttribute() {

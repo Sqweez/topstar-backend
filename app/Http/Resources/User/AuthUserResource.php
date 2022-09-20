@@ -26,6 +26,7 @@ class AuthUserResource extends JsonResource
             'position' => $this->string_role,
             'club' => $this->club,
             'roles' => $this->roles,
+            'photo' => $this->getFirstMediaUrl(User::MEDIA_AVATAR)
         ];
     }
 }

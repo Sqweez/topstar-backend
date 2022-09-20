@@ -28,6 +28,7 @@ class SingleClientResource extends JsonResource
             'pass' => $this->pass,
             'registrar' => $this->registrar->name,
             'phone' => mask_phone($this->phone),
+            'unmasked_phone' => $this->phone,
             'balance' => $this->balance,
             'photo' => $this->getFirstMediaUrl(Client::MEDIA_AVATAR),
             'birth_date_formatted' => $this->birth_date_formatted,

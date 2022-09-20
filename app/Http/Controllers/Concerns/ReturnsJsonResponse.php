@@ -10,8 +10,9 @@ trait ReturnsJsonResponse {
     /**
      * Отправка успешного ответа с сервера
      * @param array $data
+     * @param null $message
      * @return JsonResponse
-     **/
+     */
 
     public function respondSuccess(array $data = [], $message = null): JsonResponse {
         $message = $message ?: __('messages.default_success');

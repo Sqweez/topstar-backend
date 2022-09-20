@@ -87,7 +87,7 @@ class ImportUsers extends Command
                 $this->line($user->photo);
                 $_user
                     ->addMediaFromUrl(sprintf("http://top-star.kz/photos/%s", $user->photo))
-                    ->toMediaCollection(\App\Models\Client::MEDIA_AVATAR);;
+                    ->toMediaCollection(\App\Models\User::MEDIA_AVATAR);;
             }
 
         });

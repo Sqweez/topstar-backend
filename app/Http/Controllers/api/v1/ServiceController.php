@@ -2,18 +2,28 @@
 
 namespace App\Http\Controllers\api\v1;
 
+use App\Actions\Service\ActivatePurchasedServiceAction;
+use App\Actions\Service\CreateServiceAction;
+use App\Actions\Service\CreateRestoredServiceAction;
+use App\Actions\Service\RestorePurchasedServiceAction;
+use App\Actions\Service\UpdateServiceAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Service\CreateServiceRequest;
+use App\Http\Requests\Service\RestoreServiceRequest;
 use App\Http\Requests\Service\UpdateServiceRequest;
 use App\Http\Resources\Client\ClientPurchasedServices;
+use App\Http\Resources\Client\SingleClientResource;
 use App\Http\Resources\Service\ServicesListResource;
 use App\Http\Resources\Service\SingleServiceResource;
-use App\Http\Services\ServiceService;
+use App\Models\Sale;
 use App\Models\Service;
 use App\Models\ServiceSale;
+use App\Repositories\Client\RetrieveSingleClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
 class ServiceController extends ApiController
 {
@@ -38,13 +48,14 @@ class ServiceController extends ApiController
      * Store a newly created resource in storage.
      *
      * @param CreateServiceRequest $request
+     * @param CreateServiceAction $action
      * @return JsonResponse
      */
-    public function store(CreateServiceRequest $request, ServiceService $serviceService): JsonResponse {
-        $validatedData = $request->validated();
-        $service = $serviceService->createService($validatedData);
-        $service = ServicesListResource::make($service);
-        return $this->respondSuccess(['service' => $service], 'Услуга успешно создана!');
+    public function store(CreateServiceRequest $request, CreateServiceAction $action): JsonResponse {
+        $service = $action->handle($request);
+        return $this->respondSuccess([
+            'service' => ServicesListResource::make($service)
+        ], 'Услуга успешно создана!');
     }
 
     /**
@@ -62,14 +73,14 @@ class ServiceController extends ApiController
      *
      * @param UpdateServiceRequest $request
      * @param Service $service
-     * @param ServiceService $serviceService
+     * @param UpdateServiceAction $action
      * @return JsonResponse
      */
-    public function update(UpdateServiceRequest $request, Service $service, ServiceService $serviceService): JsonResponse {
-        $validatedData = $request->validated();
-        $service = $serviceService->updateService($service, $validatedData);
-        $service = ServicesListResource::make($service);
-        return $this->respondSuccess(['service' => $service], 'Услуга успешно обновлена!');
+    public function update(UpdateServiceRequest $request, Service $service, UpdateServiceAction $action): JsonResponse {
+        $action->handle($request, $service);
+        return $this->respondSuccess([
+            'service' => ServicesListResource::make(Service::find($service->id))
+        ], 'Услуга успешно обновлена!');
     }
 
     /**
@@ -87,11 +98,10 @@ class ServiceController extends ApiController
     /*
      * Активирует купленную ранее тренировку
      * */
-    public function activateService(Request $request, ServiceSale $service, ServiceService $serviceService): JsonResponse {
-        $sale = $serviceService->activateService($service);
-        return $this->respondSuccess(
-            ['program' => ClientPurchasedServices::make($sale)],
-            'Программа успешно активирована!'
-        );
+    public function activateService(Request $request, ServiceSale $service, ActivatePurchasedServiceAction $action): JsonResponse {
+        $sale = $action->handle($request, $service);
+        return $this->respondSuccess([
+            'program' => ClientPurchasedServices::make($sale)
+        ], 'Программа успешно активирована!');
     }
 }

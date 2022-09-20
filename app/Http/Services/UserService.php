@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Models\Client;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +20,9 @@ class UserService {
                 $pass = PassService::createPass($payload['pass']);
                 $user->pass()->save($pass);
             }
+            if (isset($payload['photo'])) {
+                $user->addMedia($payload['photo'])->toMediaCollection(User::MEDIA_AVATAR);
+            }
             $user->roles()->sync($payload['roles']);
             return $user;
         });
@@ -31,6 +35,20 @@ class UserService {
                 $user->pass()->delete();
                 $pass = PassService::createPass($payload['pass']);
                 $user->pass()->save($pass);
+            }
+            if (isset($payload['photo'])) {
+                $user->addMedia($payload['photo'])->toMediaCollection(User::MEDIA_AVATAR);
+            }
+            if (isset($payload['photo'])) {
+                $oldMedia = $user->getFirstMedia(User::MEDIA_AVATAR);
+                if ($oldMedia) {
+                    try {
+                        $oldMedia->delete();
+                    } catch (\Exception $exception) {
+                        \Log::error($exception->getMessage());
+                    }
+                }
+                $user->addMedia($payload['photo'])->toMediaCollection(User::MEDIA_AVATAR);
             }
             $user->roles()->sync($payload['roles']);
             return $user;

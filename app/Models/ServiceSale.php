@@ -50,6 +50,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property-read int $remaining_minutes
  * @property-read int $solarium_expired_minutes
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceSale whereIsProlongation($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RestoredService[] $restores
+ * @property-read int|null $restores_count
  */
 class ServiceSale extends Model
 {
@@ -75,6 +77,10 @@ class ServiceSale extends Model
         return $this->hasMany(ClientServicePenalty::class)
             ->where('is_accepted', true)
             ->where('is_declined', false);
+    }
+
+    public function restores(): HasMany {
+        return $this->hasMany(RestoredService::class);
     }
 
     public function getLastTrainerAttribute() {
@@ -139,7 +145,8 @@ class ServiceSale extends Model
     public function getCanBeRestoredAttribute(): bool {
         return !$this->getCanBeUsedAttribute()
             && $this->getIsActivatedAttribute()
-            && $this->getRemainingVisitsAttribute() > 0;
+            && $this->getRemainingVisitsAttribute() > 0
+            && $this->service->restore_price > 0;
     }
 
     public function getAlreadyWrittenOffAttribute(): bool {
@@ -148,5 +155,12 @@ class ServiceSale extends Model
             return false;
         }
         return !!$this->visits->where('session_id', $activeSession->id)->count();
+    }
+
+    public function getHasUnconfirmedRestoreRequestsAttribute(): bool {
+        return $this->restores
+                ->where('is_accepted', false)
+                ->where('is_declined', false)
+                ->count() > 0;
     }
 }

@@ -18,12 +18,14 @@ class ServiceSaleAction {
             $client = Client::find($payload['client_id']);
             $repeatCount = $payload['count'];
             for ($i = 0; $i < $repeatCount; $i++) {
-                $transactionPayload = $this->_mapTransactionPayload($service, $payload);
-                $transaction = TransactionService::create($client, $transactionPayload);
                 $serviceSalePayload = $this->_mapServiceSalePayload($service, $payload);
                 $serviceSale = ServiceSale::create($serviceSalePayload);
-                $salePayload = $this->_mapSalePayload($transaction, $serviceSale, $payload);
-                Sale::create($salePayload);
+                $salePayload = $this->_mapSalePayload($payload);
+                $sale = $serviceSale->sale()->create($salePayload);
+                $transactionPayload = $this->_mapTransactionPayload($service, $payload);
+                $transaction = $sale->transaction()->create($transactionPayload);
+                // Инкремент т.к. значение транзакции уже отрицательное
+                $client->increment('balance', $transaction->amount);
             }
             return $client;
         });
@@ -54,19 +56,15 @@ class ServiceSaleAction {
             'client_id' => $payload['client_id'],
             'amount' => $payload['amount'] * -1,
             'club_id' => $payload['club_id'],
-            'payment_type' => __hardcoded(3),
             'description' => $description,
         ];
     }
 
-    public function _mapSalePayload(Transaction $transaction, ServiceSale $serviceSale, $payload): array {
+    public function _mapSalePayload($payload): array {
         return [
             'client_id' => $payload['client_id'],
             'user_id' => $payload['user_id'],
             'club_id' => $payload['club_id'],
-            'transaction_id' => $transaction->id,
-            'salable_type' => ServiceSale::class,
-            'salable_id' => $serviceSale->id,
         ];
     }
 }

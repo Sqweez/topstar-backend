@@ -93,6 +93,8 @@ class User extends Authenticatable implements JWTSubject, HasMedia
      */
     protected $guarded = ['id'];
 
+    const MEDIA_AVATAR = 'user_avatars';
+
     protected $hidden = [
         'password',
         'deleted_at',

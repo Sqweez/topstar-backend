@@ -89,6 +89,8 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @method static Builder|Client wherePassword($value)
  * @method static \Illuminate\Database\Query\Builder|Client withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Client withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ClientReplenishment[] $replenishments
+ * @property-read int|null $replenishments_count
  */
 class Client extends Model implements HasMedia
 {
@@ -125,6 +127,10 @@ class Client extends Model implements HasMedia
     public function transactions(): HasMany {
         return $this->hasMany(Transaction::class)
             ->orderByDesc('id');
+    }
+
+    public function replenishments(): HasMany {
+        return $this->hasMany(ClientReplenishment::class, 'client_id');
     }
 
     public function sales(): HasMany {

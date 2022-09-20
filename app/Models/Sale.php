@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -51,8 +52,8 @@ class Sale extends Model
         return $this->morphTo(__FUNCTION__, 'salable_type', 'salable_id', 'id');
     }
 
-    public function transaction(): BelongsTo {
-        return $this->belongsTo(Transaction::class);
+    public function transaction(): MorphOne {
+        return $this->morphOne(Transaction::class, 'transactional');
     }
 
     public function client(): BelongsTo {
@@ -63,7 +64,7 @@ class Sale extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function club() {
+    public function club(): BelongsTo {
         return $this->belongsTo(Club::class);
     }
 }

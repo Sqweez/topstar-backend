@@ -33,6 +33,7 @@ class ClientPurchasedServices extends JsonResource
             'initial_entries_count' => $service->entries_count,
             'type' => $service->service->type,
             'active_until' => $service->active_until_formatted,
+            'active_until_restored' => format_date(today()->addDays(7)),
             'can_be_prolonged' => $service->can_be_prolonged,
             'is_activated' => $service->is_activated,
             'visits' => $service->visits,
@@ -46,6 +47,7 @@ class ClientPurchasedServices extends JsonResource
             'prolongation_price' => $service->service->prolongation_price,
             'last_trainer' => $service->last_trainer,
             'already_written_off' => $service->already_written_off,
+            'has_unconfirmed_restore_requests' => $service->has_unconfirmed_restore_requests,
         ];
     }
 }

@@ -35,6 +35,7 @@ class UserController extends ApiController
      * @param CreateUserRequest $request
      * @param UserService $userService
      * @return JsonResponse
+     * @throws \Throwable
      */
     public function store(CreateUserRequest $request, UserService $userService): JsonResponse {
         $validatedData = $request->validated();
@@ -75,8 +76,8 @@ class UserController extends ApiController
     public function uploadPhoto(Request $request, User $user): JsonResponse {
         $user->media()->forceDelete();
         $user
-            ->addMedia($request->file(Client::MEDIA_AVATAR))
-            ->toMediaCollection();
+            ->addMedia($request->file('photo'))
+            ->toMediaCollection(User::MEDIA_AVATAR);
         $userResource = SingleUserResource::make($user);
         return $this->respondSuccess(['user' => $userResource], 'Фото загружено!');
     }

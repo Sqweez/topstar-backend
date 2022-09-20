@@ -7,6 +7,7 @@ use App\Http\Resources\Economy\ClubGuests;
 use App\Http\Resources\Economy\NewClients;
 use App\Http\Resources\Economy\PurchasedPrograms;
 use App\Models\Client;
+use App\Models\ClientReplenishment;
 use App\Models\Club;
 use App\Models\Sale;
 use App\Models\ServiceSale;
@@ -40,11 +41,9 @@ class EconomyService {
     }
 
     private function getBalancesTopUpReport($start, $finish): AnonymousResourceCollection {
-        $transactions = Transaction::query()
+        $transactions = ClientReplenishment::query()
             ->whereDate('created_at', '>=', $start)
             ->whereDate('created_at', '<=', $finish)
-            ->where('amount', '>', 0)
-            ->whereNull('cancelled_at')
             ->with(['club:id,name', 'client:id,name', 'user:id,name'])
             ->get();
         return AccountTopUp::collection($transactions);

@@ -4,6 +4,8 @@ use App\Http\Controllers\api\v1\{ClientController,
     ClubController,
     EconomyController,
     PenaltyController,
+    RequestController,
+    RestoredServiceController,
     RoleController,
     SaleController,
     ServiceController,
@@ -41,6 +43,14 @@ Route::group([
     Route::get('economy', [EconomyController::class, 'index']);
     // Штрафное списание услуги
     Route::apiResource('penalty', PenaltyController::class);
+    // Восстановление услуги
+    Route::post('restored/{service}', [RestoredServiceController::class, 'store']);
+    Route::patch('restored/{restored}', [RestoredServiceController::class, 'update']);
+    // Получение списка запросов
+    Route::group(['prefix' => 'requests'], function () {
+        Route::get('/penalties', [RequestController::class, 'getPenaltiesRequests']);
+        Route::get('/restored', [RequestController::class, 'getRestoredServiceRequests']);
+    });
 
 });
 

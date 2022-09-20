@@ -28,8 +28,9 @@ class SingleUserResource extends JsonResource
             'club' => $this->club,
             'position' => $this->string_role,
             'login' => $this->login,
-            'photo' => $this->getFirstMediaUrl(Client::MEDIA_AVATAR),
+            'photo' => $this->getFirstMediaUrl(User::MEDIA_AVATAR),
             'phone' => mask_phone($this->phone),
+            'unmasked_phone' => $this->phone,
             'birth_date' => $this->birth_date_formatted,
             'pass' => $this->pass->code ?? '',
             'description' => $this->description

@@ -1,26 +1,19 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Actions\Service;
 
+use App\Models\Sale;
 use App\Models\Service;
 use App\Models\ServiceSale;
+use Illuminate\Http\Request;
 
-class ServiceService {
+class ActivatePurchasedServiceAction {
 
-    public function createService($payload = []): Service {
-        return Service::create($payload);
-    }
-
-    public function updateService(Service $service, $payload = []): Service {
-        $service->update($payload);
-        return $service;
-    }
-
-    public function activateService(ServiceSale $serviceSale) {
+    public function handle(Request $request, ServiceSale $serviceSale): ?Sale {
         $service = $serviceSale->service;
         $activeUntil = now()->addDays($service->validity_days - 1);
         // Если солярий, то прибавляем 100 лет
-        if ($service->service_type_id === 2) {
+        if ($service->service_type_id === Service::TYPE_SOLARIUM) {
             $activeUntil = now()->addYears(100);
         }
         $serviceSale->update([

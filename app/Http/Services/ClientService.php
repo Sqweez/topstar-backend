@@ -34,8 +34,10 @@ class ClientService {
             }
             if (isset($payload['photo'])) {
                 $oldMedia = $client->getFirstMedia(Client::MEDIA_AVATAR);
-                if ($oldMedia) {
+                try {
                     $oldMedia->delete();
+                } catch (\Exception $exception) {
+                    \Log::error($exception->getMessage());
                 }
                 $client->addMedia($payload['photo'])->toMediaCollection(Client::MEDIA_AVATAR);
             }

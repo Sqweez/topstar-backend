@@ -40,6 +40,7 @@ class CreateUserRequest extends FormRequest
             'password' => 'sometimes',
             'pass' => ['sometimes', new NotBusyPass],
             'description' => 'sometimes',
+            'photo' => 'sometimes|file',
         ];
     }
 

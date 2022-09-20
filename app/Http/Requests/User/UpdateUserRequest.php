@@ -36,7 +36,8 @@ class UpdateUserRequest extends FormRequest
             'birth_date' => 'required|date|before:today|after:' . now()->subYears(100),
             'roles' => 'required|array',
             'pass' => ['sometimes', new NotBusyPass($this->id, User::class)],
-            'description' => 'sometimes'
+            'description' => 'sometimes',
+            'photo' => 'sometimes|file',
         ];
     }
 
