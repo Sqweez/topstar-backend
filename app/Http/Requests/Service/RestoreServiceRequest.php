@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Service;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RestoreServiceRequest extends FormRequest
@@ -42,6 +43,7 @@ class RestoreServiceRequest extends FormRequest
                 && !isset($this->document)
                 && $this->restore_until === $this->base_restore_until,
             'user_id' => auth()->id(),
+            'previous_active_until' => Carbon::parse($this->previous_active_until)
         ]);
     }
 }
