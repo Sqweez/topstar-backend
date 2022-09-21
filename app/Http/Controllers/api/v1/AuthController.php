@@ -21,7 +21,7 @@ class AuthController extends ApiController
         }
 
         if ($request->has('login') && $request->has('password')) {
-            return $this->loginViaCredentials($request->get('login'), $request->get('password'));
+            return $this->loginViaCredentials(unmask_phone($request->get('login')), $request->get('password'));
         }
 
         return $this->unauthorized();
