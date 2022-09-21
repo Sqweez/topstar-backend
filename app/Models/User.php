@@ -124,7 +124,9 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     }
 
     public function roles(): BelongsToMany {
-        return $this->belongsToMany(Role::class, 'role_user', 'user_id')->select(['id', 'name']);
+        return $this
+            ->belongsToMany(Role::class, 'role_user', 'user_id')
+            ->select(['id', 'name']);
     }
 
     public function hasRole(string $roleName): bool {
@@ -138,14 +140,14 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     }
 
     public function getStringRoleAttribute(): string {
-        if (!$this->roles()->exists()) {
+        if (!$this->roles) {
             return 'Неизвестно';
         }
-        return $this->roles()->pluck('name')->join(' | ');
+        return $this->roles->pluck('name')->join(' | ');
     }
 
     public function getIsTrainerAttribute(): bool {
-        if (!$this->roles()->exists()) {
+        if (!$this->roles) {
             return false;
         }
         return $this->roles->contains('id', 6);

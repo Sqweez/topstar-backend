@@ -26,7 +26,8 @@ class UserListResource extends JsonResource
             'roles' => $this->roles,
             'club' => $this->club,
             'position' => $this->string_role,
-            'is_trainer' => $this->is_trainer,
+            //'position' => $this->string_role,
+            //'is_trainer' => $this->is_trainer,
         ];
     }
 }

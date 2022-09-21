@@ -24,7 +24,7 @@ class UserController extends ApiController
      */
     public function index(): AnonymousResourceCollection {
         $users =  User::query()
-            ->with(['club'])
+            ->with(['club', 'roles'])
             ->get();
         return UserListResource::collection($users);
     }
