@@ -35,4 +35,17 @@ class Club extends Model
     public function clients(): HasMany {
         return $this->hasMany(Client::class);
     }
+
+    public function getClubColorAttribute(): string {
+        switch ($this->id) {
+            case 1:
+                return '#7714bd';
+            case 2:
+                return '#b1cd1f';
+            case 3:
+                return '#FF8C00';
+            default:
+                return '#b1cd1f';
+        }
+    }
 }

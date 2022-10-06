@@ -13,6 +13,7 @@ use App\Models\Sale;
 use App\Models\ServiceSale;
 use App\Models\Session;
 use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class EconomyService {
@@ -25,6 +26,53 @@ class EconomyService {
             'programs_purchased' => $this->getProgramPurchasedReport($start, $finish),
             'new_clients' => $this->getNewClientsReport($start, $finish),
             'club_guests' => $this->getClubGuestsReport($start, $finish),
+        ];
+    }
+
+    public function getGraphReports($dates) {
+        $start = $dates['start'];
+        $finish = $dates['finish'];
+        $clubs = Club::all();
+        $data = ClientReplenishment::query()
+            ->whereDate('created_at', '>=', $start)
+            ->whereDate('created_at', '<=', $finish)
+            ->with('club:id,name')
+            ->get()
+            ->groupBy('club_id');
+
+        $ranges = collect(get_dates_range($start, $finish));
+
+        $clubs = $clubs->map(function ($club) use ($data) {
+            $needleData = isset($data[$club->id]) ? collect($data[$club->id]) : collect([]);
+            $needleData = $needleData
+                ->groupBy(function ($i) {
+                    return Carbon::parse($i['created_at'])->format('Y-m-d');
+                })
+                ->map(function ($i) {
+                    return collect($i)->sum('amount');
+                });
+
+            return [
+                'id' => $club->id,
+                'name' => $club->name,
+                'data' => $needleData,
+                'color' => $club->club_color,
+            ];
+        });
+
+        return [
+            'dates' => $ranges->map(function ($range) {
+                return Carbon::parse($range)->format('d.m.Y');
+            }),
+            'reports' => $clubs->map(function ($data) use ($ranges) {
+                return [
+                    'label' => $data['name'],
+                    'color' => $data['color'],
+                    'data' => collect($ranges)->map(function ($range) use ($data) {
+                        return $data['data'][$range] ?? 0;
+                    }),
+                ];
+            }),
         ];
     }
 

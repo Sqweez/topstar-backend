@@ -29,14 +29,20 @@ class ClientController extends ApiController {
         return ClientListResource::collection($clients);
     }
 
-    public function search(Request $request): AnonymousResourceCollection {
+    public function search(Request $request) {
         $search = $request->get('search');
         if (!$search) {
             return ClientListResource::collection([]);
         }
-        $clients = Client::query()->where(function (Builder $query) use ($search) {
-                $query->where('name', 'like', prepare_search_string($search))->orWhere('phone', 'like', prepare_search_string($search))->orWhereHas('pass', fn($query) => $query->whereCode($search))->orWhereHas('active_session', fn($query) => $query->whereHas('trinket', fn($query) => $query->whereCode($search)));
-            })->with(['club', 'pass', 'active_session.trinket'])->get();
+        $clients = Client::query()
+            ->where(function (Builder $query) use ($search) {
+                $query->where('name', 'like', prepare_search_string($search))
+                    ->orWhere('phone', 'like', prepare_search_string($search))
+                    ->orWhereHas('pass', fn($query) => $query->whereCode($search))
+                    ->orWhereHas('active_session', fn($query) => $query->whereHas('trinket', fn($query) => $query->whereCode($search)));
+            })
+            ->with(['club', 'pass', 'active_session.trinket'])
+            ->get();
         return ClientListResource::collection($clients);
     }
 

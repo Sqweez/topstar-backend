@@ -37,6 +37,7 @@ class UpdateClientRequest extends FormRequest
     protected function prepareForValidation() {
         $this->merge([
             'phone' => unmask_phone($this->phone),
+            'description' => $this->description === 'null' ? '' : $this->description,
         ]);
     }
 }

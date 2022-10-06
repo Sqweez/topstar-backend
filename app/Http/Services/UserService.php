@@ -37,9 +37,6 @@ class UserService {
                 $user->pass()->save($pass);
             }
             if (isset($payload['photo'])) {
-                $user->addMedia($payload['photo'])->toMediaCollection(User::MEDIA_AVATAR);
-            }
-            if (isset($payload['photo'])) {
                 $oldMedia = $user->getFirstMedia(User::MEDIA_AVATAR);
                 if ($oldMedia) {
                     try {

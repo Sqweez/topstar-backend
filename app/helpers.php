@@ -75,3 +75,17 @@ if (!function_exists('mask_phone')) {
         return $output;
     }
 }
+
+if (!function_exists('get_dates_range')) {
+    function get_dates_range ($_start, $_finish) {
+        $start = Carbon::parse($_start);
+        $finish = Carbon::parse($_finish);
+        $dates = [
+            $start->format('Y-m-d')
+        ];
+        while (!$start->eq($finish)) {
+            $dates[] = $start->addDay()->format('Y-m-d');
+        }
+        return $dates;
+    }
+}

@@ -40,6 +40,7 @@ Route::group([
     Route::post('session/write-off', [SessionController::class, 'writeOffVisit']);
     // получение статистических данных
     Route::get('economy/balance', [EconomyController::class, 'getClientsBalance']);
+    Route::get('economy/graphs', [EconomyController::class, 'getGraphReports']);
     Route::get('economy', [EconomyController::class, 'index']);
     // Штрафное списание услуги
     Route::apiResource('penalty', PenaltyController::class);

@@ -37,7 +37,6 @@ class TopUpClientAccountRequest extends FormRequest
     protected function prepareForValidation() {
         $this->merge([
             'user_id' => auth()->id(),
-            'club_id' => Client::find($this->client_id)->club_id,
             'description' => $this->description ?: 'Пополнение средств пользователем ' . auth()->user()->name,
         ]);
     }

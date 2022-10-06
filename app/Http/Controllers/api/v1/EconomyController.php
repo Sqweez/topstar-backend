@@ -23,4 +23,10 @@ class EconomyController extends ApiController
             'reports' => $service->getClientsBalance()
         ]);
     }
+
+    public function getGraphReports(GetReportsRequest $request, EconomyService $service): JsonResponse {
+        return $this->respondSuccessNoReport([
+            'reports' => $service->getGraphReports($request->validated())
+        ]);
+    }
 }
