@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Client[] $clients
  * @property-read int|null $clients_count
+ * @property-read string $club_color
  */
 class Club extends Model
 {
@@ -43,7 +44,7 @@ class Club extends Model
             case 2:
                 return '#b1cd1f';
             case 3:
-                return '#FF8C00';
+                return '#FFEE58';
             default:
                 return '#b1cd1f';
         }

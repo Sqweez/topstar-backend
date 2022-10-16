@@ -25,7 +25,7 @@ class ClientController extends ApiController {
      * @return AnonymousResourceCollection
      */
     public function index(): AnonymousResourceCollection {
-        $clients = Client::query()->with(['club', 'pass', 'active_session.trinket'])->get();
+        $clients = Client::query()->with(['club', 'pass', 'active_session.trinket', 'registrar'])->get();
         return ClientListResource::collection($clients);
     }
 

@@ -24,6 +24,7 @@ class SingleClientResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'gender' => $this->gender,
+            'gender_display' => $this->gender === 'F' ? 'Женский' : 'Мужской',
             'club' => $this->club,
             'pass' => $this->pass,
             'registrar' => $this->registrar->name,

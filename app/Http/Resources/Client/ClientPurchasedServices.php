@@ -48,6 +48,7 @@ class ClientPurchasedServices extends JsonResource
             'last_trainer' => $service->last_trainer,
             'already_written_off' => $service->already_written_off,
             'has_unconfirmed_restore_requests' => $service->has_unconfirmed_restore_requests,
+            'days_remaining' => $service->days_remaining,
         ];
     }
 }

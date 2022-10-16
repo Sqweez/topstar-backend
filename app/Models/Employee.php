@@ -59,6 +59,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @method static \Illuminate\Database\Query\Builder|Employee withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Employee withoutTrashed()
  * @mixin \Eloquent
+ * @property-read bool $can_sale_service
+ * @property-read bool $is_boss
+ * @property-read bool $is_seller
  */
 class Employee extends User
 {

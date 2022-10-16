@@ -83,6 +83,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereGender($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsClient($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsEmployee($value)
+ * @property-read bool $can_sale_service
+ * @property-read bool $is_boss
+ * @property-read bool $is_seller
  */
 class User extends Authenticatable implements JWTSubject, HasMedia
 {
@@ -150,7 +153,25 @@ class User extends Authenticatable implements JWTSubject, HasMedia
         if (!$this->roles) {
             return false;
         }
-        return $this->roles->contains('id', 6);
+        return $this->roles->contains('id', Role::ROLE_TRAINER);
+    }
+
+    public function getIsBossAttribute (): bool {
+        if (!$this->roles) {
+            return false;
+        }
+        return $this->roles->contains('id', Role::ROLE_BOSS);
+    }
+
+    public function getIsSellerAttribute(): bool {
+        if (!$this->roles) {
+            return false;
+        }
+        return $this->roles->contains('id', Role::ROLE_SELLER);
+    }
+
+    public function getCanSaleServiceAttribute(): bool {
+        return $this->getIsBossAttribute() || $this->getIsSellerAttribute();
     }
 
     public function getJWTIdentifier() {

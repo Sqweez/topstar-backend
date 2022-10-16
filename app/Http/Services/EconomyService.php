@@ -60,19 +60,33 @@ class EconomyService {
             ];
         });
 
+        $mappedReports = $clubs->map(function ($data) use ($ranges) {
+            return [
+                'label' => $data['name'],
+                'color' => $data['color'],
+                'data' => collect($ranges)->map(function ($range) use ($data) {
+                    return $data['data'][$range] ?? 0;
+                }),
+            ];
+        });
+
+        $totalReports = collect([[
+            'label' => 'Итого',
+            'color' => '#43A047',
+            'data' => collect($ranges)->map(function ($range, $key) use ($mappedReports) {
+                return $mappedReports->reduce(function ($a, $c) use ($key) {
+                    return $a + $c['data'][$key];
+                }, 0);
+            })
+        ]]);
+
+        $reports = $mappedReports->mergeRecursive($totalReports);
+
         return [
             'dates' => $ranges->map(function ($range) {
                 return Carbon::parse($range)->format('d.m.Y');
             }),
-            'reports' => $clubs->map(function ($data) use ($ranges) {
-                return [
-                    'label' => $data['name'],
-                    'color' => $data['color'],
-                    'data' => collect($ranges)->map(function ($range) use ($data) {
-                        return $data['data'][$range] ?? 0;
-                    }),
-                ];
-            }),
+            'reports' => $reports,
         ];
     }
 

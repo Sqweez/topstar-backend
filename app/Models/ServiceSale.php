@@ -52,6 +52,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceSale whereIsProlongation($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RestoredService[] $restores
  * @property-read int|null $restores_count
+ * @property-read bool $has_unconfirmed_restore_requests
  */
 class ServiceSale extends Model
 {
@@ -162,5 +163,13 @@ class ServiceSale extends Model
                 ->where('is_accepted', false)
                 ->where('is_declined', false)
                 ->count() > 0;
+    }
+
+    public function getDaysRemainingAttribute(): ?string {
+        if (!$this->active_until || !$this->getCanBeUsedAttribute()) {
+            return null;
+        }
+        $diff = Carbon::parse($this->active_until)->diff(now());
+        return $diff->days;
     }
 }

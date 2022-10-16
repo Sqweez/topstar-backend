@@ -43,7 +43,7 @@ class UpdateUserRequest extends FormRequest
 
     protected function prepareForValidation() {
         $this->merge([
-            'birth_date' => Carbon::parse($this->birth_date)->format('y-m-d'),
+            'birth_date' => Carbon::parse($this->birth_date)->format('Y-m-d'),
             'phone' => unmask_phone($this->phone),
         ]);
     }

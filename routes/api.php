@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\v1\{ClientController,
     ClubController,
+    DashboardController,
     EconomyController,
     PenaltyController,
     RequestController,
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
     'prefix' => 'v1',
-    'middleware' => 'auth:api'
+    //'middleware' => 'auth:api'
 ], function () {
     Route::apiResource('clubs', ClubController::class)->only(['index']);
     Route::apiResource('roles', RoleController::class)->only(['index']);
@@ -52,6 +53,8 @@ Route::group([
         Route::get('/penalties', [RequestController::class, 'getPenaltiesRequests']);
         Route::get('/restored', [RequestController::class, 'getRestoredServiceRequests']);
     });
+    // Получение данных для дэшборда
+    Route::get('dashboard/in-gym-clients', [DashboardController::class, 'getInGymClients']);
 
 });
 

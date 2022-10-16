@@ -16,7 +16,11 @@ class RoleController extends Controller
      * @return AnonymousResourceCollection
      */
     public function index(): AnonymousResourceCollection {
-        $roles = Role::query()->where('id', '>', 1)->get();
+        $roles = Role::query()
+            ->when(!auth()->user()->is_boss, function ($builder) {
+                $builder->where('id', '>', Role::ROLE_BOSS);
+            })
+            ->get();
         return RoleListResource::collection($roles);
     }
 

@@ -26,4 +26,13 @@ class Role extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+
+    CONST ROLE_BOSS = 1;
+    const ROLE_ADMIN = 2;
+    const ROLE_SELLER = 3;
+    const ROLE_BARTENDER = 4;
+    const ROLE_MODERATOR = 5;
+    const ROLE_TRAINER = 6;
+    const ROLE_ACCOUNTANT = 7;
 }
