@@ -38,6 +38,7 @@ class UpdateUserRequest extends FormRequest
             'pass' => ['sometimes', new NotBusyPass($this->id, User::class)],
             'description' => 'sometimes',
             'photo' => 'sometimes|file',
+            'club_id' => 'required'
         ];
     }
 
