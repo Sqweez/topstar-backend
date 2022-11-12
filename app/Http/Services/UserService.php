@@ -24,6 +24,7 @@ class UserService {
                 $user->addMedia($payload['photo'])->toMediaCollection(User::MEDIA_AVATAR);
             }
             $user->roles()->sync($payload['roles']);
+            $user->clubs()->sync($payload['clubs']);
             return $user;
         });
     }
@@ -48,6 +49,7 @@ class UserService {
                 $user->addMedia($payload['photo'])->toMediaCollection(User::MEDIA_AVATAR);
             }
             $user->roles()->sync($payload['roles']);
+            $user->clubs()->sync($payload['clubs_id']);
             return $user;
         });
     }

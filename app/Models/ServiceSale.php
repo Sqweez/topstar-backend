@@ -53,6 +53,9 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RestoredService[] $restores
  * @property-read int|null $restores_count
  * @property-read bool $has_unconfirmed_restore_requests
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RestoredService[] $acceptedRestores
+ * @property-read int|null $accepted_restores_count
+ * @property-read string|null $days_remaining
  */
 class ServiceSale extends Model
 {
@@ -82,6 +85,10 @@ class ServiceSale extends Model
 
     public function restores(): HasMany {
         return $this->hasMany(RestoredService::class);
+    }
+
+    public function acceptedRestores(): HasMany {
+        return $this->restores()->where('is_accepted', true);
     }
 
     public function getLastTrainerAttribute() {

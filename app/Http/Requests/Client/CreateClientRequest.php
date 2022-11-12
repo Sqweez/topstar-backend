@@ -31,7 +31,7 @@ class CreateClientRequest extends FormRequest
             'phone' => [
                 'required',
                 'string',
-                Rule::unique('users')->whereNull('deleted_at')
+                Rule::unique('clients')->whereNull('deleted_at')
             ],
             'birth_date' => 'required|date|before:today|after:' . now()->subYears(100),
             'pass' => ['sometimes', new NotBusyPass],

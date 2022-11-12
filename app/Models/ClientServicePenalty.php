@@ -60,11 +60,22 @@ class ClientServicePenalty extends Model
     }
 
     public function user(): BelongsTo {
-        return $this->belongsTo(User::class)->select(['id', 'name']);
+        return $this->belongsTo(User::class)
+            ->select(['id', 'name'])
+            ->withDefault([
+                'id' => null,
+                'name' => 'Неизвестно'
+            ]);
     }
 
     public function trainer(): BelongsTo {
-        return $this->belongsTo(User::class, 'trainer_id')->select(['id', 'name']);
+        return $this
+            ->belongsTo(User::class, 'trainer_id')
+            ->select(['id', 'name'])
+            ->withDefault([
+                'id' => null,
+                'name' => 'Не установлен'
+            ]);
     }
 
     public function solver(): BelongsTo {

@@ -5,6 +5,7 @@ namespace App\Http\Requests\Client;
 use App\Models\Client;
 use App\Rules\NotBusyPass;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateClientRequest extends FormRequest
 {
@@ -31,6 +32,11 @@ class UpdateClientRequest extends FormRequest
             'pass' => ['sometimes', new NotBusyPass($this->id, Client::class)],
             'description' => 'sometimes',
             'photo' => 'sometimes|file',
+            'phone' => [
+                'required',
+                Rule::unique('clients', 'phone')
+                    ->whereNot('id', $this->id)
+            ]
         ];
     }
 

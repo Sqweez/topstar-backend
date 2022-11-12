@@ -25,10 +25,13 @@ class AuthUserResource extends JsonResource
             'name' => $this->name,
             'position' => $this->string_role,
             'club' => $this->club,
+            'clubs' => $this->clubs,
             'roles' => $this->roles,
             'photo' => $this->getFirstMediaUrl(User::MEDIA_AVATAR),
             'is_boss' => $this->is_boss,
-            'can_sale_service' => $this->can_sale_service
+            'can_sale_service' => $this->can_sale_service,
+            'can_change_club' => $this->canChangeClub(),
+            'must_select_club' => $this->mustSelectAClub(),
         ];
     }
 }

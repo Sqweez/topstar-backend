@@ -35,12 +35,13 @@ class CreateUserRequest extends FormRequest
                 Rule::unique('users')->whereNull('deleted_at')
             ],
             'birth_date' => 'required|date|before:today|after:' . now()->subYears(100),
-            'club_id' => 'required',
+            'clubs' => 'required|array',
             'roles' => 'required|array',
             'password' => 'sometimes',
             'pass' => ['sometimes', new NotBusyPass],
             'description' => 'sometimes',
             'photo' => 'sometimes|file',
+            'club_id' => 'sometimes|nullable',
         ];
     }
 
@@ -49,6 +50,7 @@ class CreateUserRequest extends FormRequest
             'birth_date' => Carbon::parse($this->birth_date)->format('y-m-d'),
             'password' => $this->password ? \Hash::make($this->password) : Hash::make(Str::random(10)),
             'phone' => unmask_phone($this->phone),
+            'club_id' => count($this->clubs) === 1 ? $this->clubs[0] : null,
         ]);
     }
 }

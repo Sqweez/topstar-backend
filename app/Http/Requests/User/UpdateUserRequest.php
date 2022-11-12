@@ -38,7 +38,8 @@ class UpdateUserRequest extends FormRequest
             'pass' => ['sometimes', new NotBusyPass($this->id, User::class)],
             'description' => 'sometimes',
             'photo' => 'sometimes|file',
-            'club_id' => 'required'
+            'club_id' => 'sometimes|nullable',
+            'clubs_id' => 'array|required'
         ];
     }
 
@@ -46,6 +47,7 @@ class UpdateUserRequest extends FormRequest
         $this->merge([
             'birth_date' => Carbon::parse($this->birth_date)->format('Y-m-d'),
             'phone' => unmask_phone($this->phone),
+            'club_id' => count($this->clubs_id) === 1 ? $this->clubs_id[0] : null,
         ]);
     }
 }

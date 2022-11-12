@@ -86,6 +86,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read bool $can_sale_service
  * @property-read bool $is_boss
  * @property-read bool $is_seller
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Club[] $clubs
+ * @property-read int|null $clubs_count
  */
 class User extends Authenticatable implements JWTSubject, HasMedia
 {
@@ -132,6 +134,12 @@ class User extends Authenticatable implements JWTSubject, HasMedia
             ->select(['id', 'name']);
     }
 
+    public function clubs(): BelongsToMany {
+        return $this
+            ->belongsToMany(Club::class, 'club_user', 'user_id')
+            ->select(['id', 'name']);
+    }
+
     public function hasRole(string $roleName): bool {
         return $this->roles->contains('name', $roleName);
     }
@@ -172,6 +180,14 @@ class User extends Authenticatable implements JWTSubject, HasMedia
 
     public function getCanSaleServiceAttribute(): bool {
         return $this->getIsBossAttribute() || $this->getIsSellerAttribute();
+    }
+
+    public function canChangeClub(): bool {
+        return $this->clubs && $this->clubs->count() > 1;
+    }
+
+    public function mustSelectAClub(): bool {
+        return $this->canChangeClub() && $this->club_id === null;
     }
 
     public function getJWTIdentifier() {

@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Models\User|null $trainer
  * @property int|null $minutes
  * @method static \Illuminate\Database\Eloquent\Builder|SessionService whereMinutes($value)
+ * @property-read \App\Models\User|null $user
  */
 class SessionService extends Model
 {
@@ -43,6 +44,15 @@ class SessionService extends Model
             ->withDefault([
                 'id' => null,
                 'name' => 'Не установлен'
+            ]);
+    }
+
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class, 'user_id')
+            ->select(['id', 'name'])
+            ->withDefault([
+                'id' => null,
+                'name' => 'Неизвестно'
             ]);
     }
 }

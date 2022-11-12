@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\Actions\Client\CreateClientReplenishmentAction;
+use App\Actions\Client\GetClientServiceHistoryAction;
 use App\Http\Requests\Client\CreateClientRequest;
 use App\Http\Requests\Client\TopUpClientAccountRequest;
 use App\Http\Requests\Client\UpdateClientRequest;
@@ -100,5 +101,12 @@ class ClientController extends ApiController {
     public function topUpClientAccount(TopUpClientAccountRequest $request, Client $client, CreateClientReplenishmentAction $action) {
         $action->handle($request, $client);
         return $this->respondSuccess(['balance' => $client->balance], 'Баланс клиента успешно пополнен');
+    }
+
+    public function getServiceHistory(Client $client, Request $request, GetClientServiceHistoryAction $action): JsonResponse {
+        $report = $action->handle($client, $request->get('service_id'));
+        return $this->respondSuccessNoReport([
+            'report' => $report
+        ]);
     }
 }

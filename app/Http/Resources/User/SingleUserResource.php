@@ -21,11 +21,14 @@ class SingleUserResource extends JsonResource
      * @return array
      */
     public function toArray($request): array {
+
+        $clubs = $this->clubs;
+
         return [
             'id' => $this->id,
             'name' => $this->name,
             'roles' => $this->roles->pluck('id'),
-            'club' => $this->club,
+            'club' => $clubs,
             'position' => $this->string_role,
             'login' => $this->login,
             'photo' => $this->getFirstMediaUrl(User::MEDIA_AVATAR),
@@ -33,7 +36,8 @@ class SingleUserResource extends JsonResource
             'unmasked_phone' => $this->phone,
             'birth_date' => $this->birth_date_formatted,
             'pass' => $this->pass->code ?? '',
-            'description' => $this->description
+            'description' => $this->description,
+            'clubs_id' => $clubs->pluck('id')
         ];
     }
 }

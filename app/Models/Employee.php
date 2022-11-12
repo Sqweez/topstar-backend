@@ -62,6 +62,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read bool $can_sale_service
  * @property-read bool $is_boss
  * @property-read bool $is_seller
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Club[] $clubs
+ * @property-read int|null $clubs_count
  */
 class Employee extends User
 {

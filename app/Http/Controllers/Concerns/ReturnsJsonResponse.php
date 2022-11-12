@@ -43,7 +43,7 @@ trait ReturnsJsonResponse {
         return $this->respondError($message, $errorCode, $data + ['unreportable' => true]);
     }
 
-    public function respondSuccessNoReport(array $data) {
+    public function respondSuccessNoReport(array $data): JsonResponse {
         return $this->respondSuccess($data + ['unreportable' => true]);
     }
 }

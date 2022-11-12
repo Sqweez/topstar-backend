@@ -22,10 +22,13 @@ Route::group([
     Route::apiResource('clubs', ClubController::class)->only(['index']);
     Route::apiResource('roles', RoleController::class)->only(['index']);
     Route::post('users/upload/{user}', [UserController::class, 'uploadPhoto']);
+    Route::post('users/{user}/club', [UserController::class, 'chooseWorkingClub']);
     Route::apiResource('users', UserController::class);
     // Пополнение баланса
     Route::post('clients/{client}/top-up', [ClientController::class, 'topUpClientAccount']);
     Route::get('clients/search', [ClientController::class, 'search']);
+    // История по выбранной/всем программам
+    Route::get('clients/{client}/service/history', [ClientController::class, 'getServiceHistory']);
     Route::apiResource('clients', ClientController::class);
     // Активация купленной услуги
     Route::post('services/activate/{service}', [ServiceController::class, 'activateService']);

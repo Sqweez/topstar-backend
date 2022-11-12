@@ -24,7 +24,7 @@ class UserController extends ApiController
      */
     public function index(): AnonymousResourceCollection {
         $users =  User::query()
-            ->with(['club', 'roles'])
+            ->with(['clubs', 'roles'])
             ->get();
         return UserListResource::collection($users);
     }
@@ -80,6 +80,12 @@ class UserController extends ApiController
             ->toMediaCollection(User::MEDIA_AVATAR);
         $userResource = SingleUserResource::make($user);
         return $this->respondSuccess(['user' => $userResource], 'Фото загружено!');
+    }
+
+    public function chooseWorkingClub(User $user, Request $request): JsonResponse {
+        $club_id = $request->get('club_id');
+        $user->update(['club_id' => $club_id]);
+        return $this->respondSuccess([], 'Рабочее место успешно выбрано!');
     }
 
     /**
