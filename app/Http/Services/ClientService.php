@@ -45,6 +45,9 @@ class ClientService {
         });
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function writeOff($payload = []) {
         return DB::transaction(function () use ($payload) {
             $client = Client::find($payload['client_id']);
@@ -96,7 +99,7 @@ class ClientService {
         }
         return $client->sessions()->create([
             'start_user_id' => $payload['user_id'],
-            'club_id' => $client->club_id,
+            'club_id' => auth()->user()->club_id,
             'trinket_id' => null,
         ]);
     }

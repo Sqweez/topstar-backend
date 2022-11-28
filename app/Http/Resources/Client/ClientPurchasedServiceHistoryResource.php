@@ -28,6 +28,7 @@ class ClientPurchasedServiceHistoryResource extends JsonResource
                 'date' => format_datetime($visit->created_at),
                 'is_penalty' => false,
                 'description' => '',
+                'club' => $visit->session->club,
                 'created_at' => $visit->created_at
             ];
         });
@@ -38,10 +39,15 @@ class ClientPurchasedServiceHistoryResource extends JsonResource
                 'name' => $service->service->name,
                 'user' => $penalty->user->name,
                 'trainer' => $penalty->trainer,
-                'date' => format_datetime($penalty->created_at),
+                'date' => sprintf(
+                    "%s %s",
+                    format_date($penalty->penalty_date),
+                    Carbon::parse($penalty->created_at)->format('H:i:s')
+                ),
                 'is_penalty' => true,
                 'description' => $penalty->description,
-                'created_at' => $penalty->created_at
+                'created_at' => $penalty->date,
+                'club' => $penalty->club,
             ];
         });
 

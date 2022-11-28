@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Client;
+namespace App\Http\Requests\Sale;
 
+use App\Rules\IsEnoughFunds;
 use Illuminate\Foundation\Http\FormRequest;
 
-class WriteOffSolariumRequest extends FormRequest
+class CreateProductSaleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,19 +22,19 @@ class WriteOffSolariumRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules(): array {
         return [
             'client_id' => 'required',
             'user_id' => 'required',
-            'minutes' => 'required'
+            'product_id' => 'sometimes',
+            'club_id' => 'required',
+            'amount' => ['required', 'min:0' , new IsEnoughFunds($this->client_id)],
         ];
     }
 
     protected function prepareForValidation() {
         $this->merge([
             'user_id' => auth()->id(),
-            'minutes' => intval($this->minutes)
         ]);
     }
 }

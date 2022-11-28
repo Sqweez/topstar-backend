@@ -36,6 +36,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @mixin \Eloquent
  * @property string $description
  * @method static \Illuminate\Database\Eloquent\Builder|ClientReplenishment whereDescription($value)
+ * @property-read string $payment_type_text
  */
 class ClientReplenishment extends Model
 {
@@ -57,5 +58,16 @@ class ClientReplenishment extends Model
 
     public function transaction(): MorphOne {
         return $this->morphOne(Transaction::class, 'transactional');
+    }
+
+    public function getPaymentTypeTextAttribute(): string {
+        switch ($this->payment_type) {
+            case 1:
+                return 'Наличные';
+            case 2:
+                return 'Безналичная оплата';
+            default:
+                return 'Неизвестный тип оплаты';
+        }
     }
 }

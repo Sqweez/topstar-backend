@@ -24,9 +24,11 @@ class GetClientServiceHistoryAction {
             ->with('salable.service')
             ->with('salable.penalties.user')
             ->with('salable.penalties.trainer')
+            ->with('salable.penalties.club')
             ->with('salable.acceptedRestores.user')
             ->with('salable.visits.trainer')
             ->with('salable.visits.user')
+            ->with('salable.visits.session.club')
             ->get();
 
         return ClientPurchasedServiceHistoryResource::collection($programs);

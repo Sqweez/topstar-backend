@@ -32,6 +32,12 @@ class AuthUserResource extends JsonResource
             'can_sale_service' => $this->can_sale_service,
             'can_change_club' => $this->canChangeClub(),
             'must_select_club' => $this->mustSelectAClub(),
+            'permissions' => [
+                'can_top_up_account' => $this->canTopUpAccount(),
+                'can_write_off_services' => $this->canWriteOffServices(),
+                'can_sale_products' => $this->canSaleProducts(),
+                'can_sale_bar' => $this->canSaleBar(),
+            ]
         ];
     }
 }

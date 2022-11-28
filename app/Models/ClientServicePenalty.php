@@ -85,4 +85,8 @@ class ClientServicePenalty extends Model
     public function service(): BelongsTo {
         return $this->belongsTo(ServiceSale::class, 'service_sale_id');
     }
+
+    public function club(): BelongsTo {
+        return $this->belongsTo(Club::class);
+    }
 }

@@ -5,6 +5,8 @@ use App\Http\Controllers\api\v1\{ClientController,
     DashboardController,
     EconomyController,
     PenaltyController,
+    ProductCategoryController,
+    ProductController,
     RequestController,
     RestoredServiceController,
     RoleController,
@@ -26,6 +28,8 @@ Route::group([
     Route::apiResource('users', UserController::class);
     // Пополнение баланса
     Route::post('clients/{client}/top-up', [ClientController::class, 'topUpClientAccount']);
+    // История клиента
+    Route::get('clients/{client}/history', [ClientController::class, 'getClientHistory']);
     Route::get('clients/search', [ClientController::class, 'search']);
     // История по выбранной/всем программам
     Route::get('clients/{client}/service/history', [ClientController::class, 'getServiceHistory']);
@@ -36,7 +40,8 @@ Route::group([
     Route::get('services/types', [ServiceController::class, 'getServiceTypes']);
     Route::apiResource('services', ServiceController::class);
     // Продажа услуги/бара
-    Route::post('sale', [SaleController::class, 'create']);
+    Route::post('sale/service', [SaleController::class, 'createServiceSale']);
+    Route::post('sale/product', [SaleController::class, 'createProductSale']);
     // Списание визита по услуге
     Route::get('session/finish/{client}', [SessionController::class, 'finish']);
     Route::post('session/attach/{client}', [SessionController::class, 'attach']);
@@ -58,6 +63,10 @@ Route::group([
     });
     // Получение данных для дэшборда
     Route::get('dashboard/in-gym-clients', [DashboardController::class, 'getInGymClients']);
+    // Товары
+    Route::post('products/{product}/batch', [ProductController::class, 'createProductBatch']);
+    Route::apiResource('products/categories', ProductCategoryController::class);
+    Route::apiResource('products', ProductController::class);
 
 });
 

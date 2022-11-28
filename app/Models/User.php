@@ -190,6 +190,22 @@ class User extends Authenticatable implements JWTSubject, HasMedia
         return $this->canChangeClub() && $this->club_id === null;
     }
 
+    public function canTopUpAccount(): bool {
+        return $this->getIsBossAttribute() || $this->roles->contains('id', Role::ROLE_SELLER);
+    }
+
+    public function canWriteOffServices(): bool {
+        return $this->getIsBossAttribute() || $this->roles->contains('id', Role::ROLE_ADMIN);
+    }
+
+    public function canSaleProducts(): bool {
+        return $this->getIsBossAttribute() || $this->roles->contains('id', Role::ROLE_ADMIN);
+    }
+
+    public function canSaleBar(): bool {
+        return $this->getIsSellerAttribute() || $this->roles->contains('id', Role::ROLE_BARTENDER);
+    }
+
     public function getJWTIdentifier() {
         return $this->getKey();
     }

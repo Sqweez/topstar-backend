@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use http\Message\Body;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,6 +32,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $minutes
  * @method static \Illuminate\Database\Eloquent\Builder|SessionService whereMinutes($value)
  * @property-read \App\Models\User|null $user
+ * @property-read \App\Models\ServiceSale|null $service_sale
+ * @property-read \App\Models\Session|null $session
  */
 class SessionService extends Model
 {
@@ -54,5 +57,13 @@ class SessionService extends Model
                 'id' => null,
                 'name' => 'Неизвестно'
             ]);
+    }
+
+    public function session(): BelongsTo {
+        return $this->belongsTo(Session::class, 'session_id');
+    }
+
+    public function service_sale(): BelongsTo {
+        return $this->belongsTo(ServiceSale::class, 'service_sale_id');
     }
 }

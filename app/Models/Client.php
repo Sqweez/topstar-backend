@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Http\Services\SaleService;
-use App\Models\Traits\HasPass;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

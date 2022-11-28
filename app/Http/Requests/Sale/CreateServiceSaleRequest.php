@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /* @mixin  Sale */
 
-class CreateSaleRequest extends FormRequest
+class CreateServiceSaleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,7 @@ class CreateSaleRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules(): array {
         return [
             'client_id' => 'required',
             'user_id' => 'required',
@@ -36,7 +35,6 @@ class CreateSaleRequest extends FormRequest
             'is_prolongation' => 'required|boolean',
             'prolonged_id' => 'sometimes',
             'count' => 'required|integer',
-            'type' => 'required'
         ];
     }
 

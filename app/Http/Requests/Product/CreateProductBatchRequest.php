@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Client;
+namespace App\Http\Requests\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class WriteOffSolariumRequest extends FormRequest
+class CreateProductBatchRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,16 +24,9 @@ class WriteOffSolariumRequest extends FormRequest
     public function rules()
     {
         return [
-            'client_id' => 'required',
-            'user_id' => 'required',
-            'minutes' => 'required'
+            'store_id' => 'required',
+            'quantity' => 'required',
+            'purchase_price' => 'sometimes'
         ];
-    }
-
-    protected function prepareForValidation() {
-        $this->merge([
-            'user_id' => auth()->id(),
-            'minutes' => intval($this->minutes)
-        ]);
     }
 }
