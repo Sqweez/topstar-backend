@@ -14,6 +14,7 @@ class RetrieveSingleClient {
         $client->load('programs.salable.restores');
         $client->load('solarium.salable.service');
         $client->load('programs.salable.visits.trainer');
+        $client->load('programs.club');
         $client->load('active_session');
         return $client;
     }

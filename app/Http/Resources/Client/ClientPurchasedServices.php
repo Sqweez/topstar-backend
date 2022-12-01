@@ -25,7 +25,8 @@ class ClientPurchasedServices extends JsonResource
 
         return [
             'id' => $service->id,
-            'name' => $service->service->name,
+            'name' => $service->self_name ?: $service->service->name,
+            'club' => $this->club,
             'service_id' => $service->service->id,
             'price' => $service->service->price,
             'unlimited_price' => $service->service->unlimited_price,

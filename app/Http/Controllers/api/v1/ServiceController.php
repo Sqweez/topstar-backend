@@ -6,6 +6,7 @@ use App\Actions\Service\ActivatePurchasedServiceAction;
 use App\Actions\Service\CreateServiceAction;
 use App\Actions\Service\CreateRestoredServiceAction;
 use App\Actions\Service\RestorePurchasedServiceAction;
+use App\Actions\Service\UpdatePurchaseServiceAction;
 use App\Actions\Service\UpdateServiceAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Service\CreateServiceRequest;
@@ -103,5 +104,15 @@ class ServiceController extends ApiController
         return $this->respondSuccess([
             'program' => ClientPurchasedServices::make($sale)
         ], 'Программа успешно активирована!');
+    }
+
+    /*
+     * Редактирование купленной программы (только для суперадмина)
+     * */
+    public function updatePurchaseService(Request $request, ServiceSale $service, UpdatePurchaseServiceAction $action) {
+        $sale = $action->handle($request, $service);
+        return $this->respondSuccess([
+            'program' => ClientPurchasedServices::make($sale)
+        ], 'Программа успешно отредактирована!');
     }
 }

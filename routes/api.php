@@ -36,6 +36,8 @@ Route::group([
     Route::apiResource('clients', ClientController::class);
     // Активация купленной услуги
     Route::post('services/activate/{service}', [ServiceController::class, 'activateService']);
+    // Редактирование купленной услуги
+    Route::patch('services/purchased/{service}', [ServiceController::class, 'updatePurchaseService']);
     // Типы услуг
     Route::get('services/types', [ServiceController::class, 'getServiceTypes']);
     Route::apiResource('services', ServiceController::class);

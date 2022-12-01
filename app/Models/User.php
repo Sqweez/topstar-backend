@@ -203,7 +203,11 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     }
 
     public function canSaleBar(): bool {
-        return $this->getIsSellerAttribute() || $this->roles->contains('id', Role::ROLE_BARTENDER);
+        return $this->getIsBossAttribute() || $this->roles->contains('id', Role::ROLE_BARTENDER);
+    }
+
+    public function canOpenSession(): bool {
+        return $this->getIsBossAttribute() || $this->roles->contains('id', Role::ROLE_ADMIN);
     }
 
     public function getJWTIdentifier() {
