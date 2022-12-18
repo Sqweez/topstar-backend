@@ -30,7 +30,9 @@ class GetClientHistoryAction {
         return [
             'replenishments' => $this->collectClientReplenishments(),
             'product_purchases' => $this->collectClientPurchases(),
+            'bar_purchases' => $this->collectClientBarPurchases(),
             'service_purchases' => $this->collectServicePurchases(),
+            'solarium_purchases' => $this->collectSolariumPurchases(),
             'visits' => $this->collectVisits(),
             'solarium_visits' => $this->collectSolariumVisits(),
         ];
@@ -53,7 +55,20 @@ class GetClientHistoryAction {
             ->where('client_id', $this->client->id)
             ->whereDate('created_at', '>=', $this->start)
             ->whereDate('created_at', '<=', $this->finish)
-            ->hasMorph('salable', [ProductSale::class])
+            ->shopSales()
+            ->with(['client', 'user', 'transaction', 'salable.product', 'club'])
+            ->latest()
+            ->get();
+
+        return ClientProductSaleHistoryResource::collection($productSales);
+    }
+
+    public function collectClientBarPurchases(): AnonymousResourceCollection {
+        $productSales = Sale::query()
+            ->where('client_id', $this->client->id)
+            ->whereDate('created_at', '>=', $this->start)
+            ->whereDate('created_at', '<=', $this->finish)
+            ->barSales()
             ->with(['client', 'user', 'transaction', 'salable.product', 'club'])
             ->latest()
             ->get();
@@ -69,6 +84,23 @@ class GetClientHistoryAction {
             ->whereHasMorph('salable', [ServiceSale::class], function ($query) {
                 return $query->whereHas('service', function ($query) {
                     return $query->whereIn('service_type_id', [Service::TYPE_PROGRAM, Service::TYPE_UNLIMITED]);
+                });
+            })
+            ->with(['client', 'user', 'transaction', 'salable.service', 'club'])
+            ->latest()
+            ->get();
+
+        return ClientServiceSaleHistoryResource::collection($serviceSales);
+    }
+
+    public function collectSolariumPurchases () {
+        $serviceSales = Sale::query()
+            ->where('client_id', $this->client->id)
+            ->whereDate('created_at', '>=', $this->start)
+            ->whereDate('created_at', '<=', $this->finish)
+            ->whereHasMorph('salable', [ServiceSale::class], function ($query) {
+                return $query->whereHas('service', function ($query) {
+                    return $query->whereIn('service_type_id', [Service::TYPE_SOLARIUM]);
                 });
             })
             ->with(['client', 'user', 'transaction', 'salable.service', 'club'])

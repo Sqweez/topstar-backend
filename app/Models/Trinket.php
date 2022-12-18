@@ -45,4 +45,8 @@ class Trinket extends Model
             ->hasOne(Session::class)
             ->where('finished_at', null);
     }
+
+    public function club() {
+        return $this->belongsTo(Club::class);
+    }
 }

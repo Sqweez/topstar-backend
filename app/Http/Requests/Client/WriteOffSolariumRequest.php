@@ -26,7 +26,7 @@ class WriteOffSolariumRequest extends FormRequest
         return [
             'client_id' => 'required',
             'user_id' => 'required',
-            'minutes' => 'required'
+            'minutes' => 'required|integer'
         ];
     }
 

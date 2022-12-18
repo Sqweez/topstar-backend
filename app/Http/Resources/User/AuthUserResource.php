@@ -30,6 +30,7 @@ class AuthUserResource extends JsonResource
             'photo' => $this->getFirstMediaUrl(User::MEDIA_AVATAR),
             'is_boss' => $this->is_boss,
             'is_seller' => $this->is_seller,
+            'is_bartender' => $this->is_bartender,
             'can_sale_service' => $this->can_sale_service,
             'can_change_club' => $this->canChangeClub(),
             'must_select_club' => $this->mustSelectAClub(),
@@ -39,6 +40,7 @@ class AuthUserResource extends JsonResource
                 'can_sale_products' => $this->canSaleProducts(),
                 'can_sale_bar' => $this->canSaleBar(),
                 'can_open_session' => $this->canOpenSession(),
+                'can_create_clients' => $this->canCreateClients(),
             ]
         ];
     }

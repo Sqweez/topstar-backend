@@ -56,6 +56,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RestoredService[] $acceptedRestores
  * @property-read int|null $accepted_restores_count
  * @property-read string|null $days_remaining
+ * @property string|null $self_name
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSale whereSelfName($value)
  */
 class ServiceSale extends Model
 {

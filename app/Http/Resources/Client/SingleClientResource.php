@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Client;
 
 use App\Models\Client;
+use App\Models\ClientBookmark;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -46,7 +47,11 @@ class SingleClientResource extends JsonResource
             'trinket_can_given' => $this->trinket_can_given,
             'session_can_be_finished' => $this->session_can_be_finished,
             'has_unlimited_discount' => $this->has_unlimited_discount,
-            'total_solarium' => $this->solarium->sum('salable.remaining_minutes')
+            'total_solarium' => $this->solarium->sum('salable.remaining_minutes'),
+            'in_bookmark' => !!ClientBookmark::query()
+                ->where('client_id', $this->id)
+                ->where('user_id', auth()->id())
+                ->first()
         ];
     }
 }

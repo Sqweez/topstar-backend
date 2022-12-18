@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Resources\Client;
+namespace App\Http\Resources\Economy;
 
 use App\Models\Sale;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /* @mixin Sale */
 
-class ClientServiceSaleHistoryResource extends JsonResource
+class BarSaleHistoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,12 +19,13 @@ class ClientServiceSaleHistoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'date' => format_datetime($this->created_at),
+            'client' => $this->client,
             'user' => $this->user,
+            'amount' => $this->transaction->amount * -1,
+            'created_at' => $this->created_at,
+            'date' => format_datetime($this->created_at),
+            'product' => $this->salable->product->full_name,
             'club' => $this->club,
-            'amount' => optional($this->transaction)->amount * -1,
-            'service' => $this->salable->service,
-            'minutes' => $this->salable->minutes ?: null,
         ];
     }
 }

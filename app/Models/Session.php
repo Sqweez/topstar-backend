@@ -39,6 +39,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $trinket_id
  * @method static \Illuminate\Database\Eloquent\Builder|Session whereTrinketId($value)
  * @property-read mixed $time_duration
+ * @method static \Illuminate\Database\Eloquent\Builder|Session today()
  */
 class Session extends Model
 {
@@ -66,6 +67,11 @@ class Session extends Model
         return $this->belongsTo(Trinket::class)->withDefault([
             'code' => null
         ]);
+    }
+
+    public function scopeToday($q) {
+        $q->where('created_at', '>=', now()->startOfDay())
+            ->where('created_at', '<=', now()->endOfDay());
     }
 
     public function getTimeDurationAttribute(): string {

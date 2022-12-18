@@ -43,6 +43,9 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|ClientServicePenalty whereIsDeclined($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ClientServicePenalty whereSolverId($value)
  * @property-read \App\Models\User|null $solver
+ * @property int $club_id
+ * @property-read \App\Models\Club|null $club
+ * @method static \Illuminate\Database\Eloquent\Builder|ClientServicePenalty whereClubId($value)
  */
 class ClientServicePenalty extends Model
 {

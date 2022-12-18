@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\api\v1\{ClientController,
+use App\Http\Controllers\api\v1\{ClientBookmarkController,
+    ClientController,
     ClubController,
     DashboardController,
     EconomyController,
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
     'prefix' => 'v1',
-    //'middleware' => 'auth:api'
+    'middleware' => 'auth:api'
 ], function () {
     Route::apiResource('clubs', ClubController::class)->only(['index']);
     Route::apiResource('roles', RoleController::class)->only(['index']);
@@ -50,9 +51,18 @@ Route::group([
     Route::post('session/solarium', [SessionController::class, 'writeOffSolarium']);
     Route::post('session/write-off', [SessionController::class, 'writeOffVisit']);
     // получение статистических данных
-    Route::get('economy/balance', [EconomyController::class, 'getClientsBalance']);
-    Route::get('economy/graphs', [EconomyController::class, 'getGraphReports']);
-    Route::get('economy', [EconomyController::class, 'index']);
+    Route::group(['prefix' => 'economy'], function () {
+        Route::get('balance', [EconomyController::class, 'getClientsBalance']);
+        Route::get('graphs', [EconomyController::class, 'getGraphReports']);
+        Route::get('/', [EconomyController::class, 'index']);
+        Route::group(['prefix' => 'my'], function () {
+            Route::get('top-ups', [EconomyController::class, 'getMyTopUps']);
+            Route::get('bar', [EconomyController::class, 'getMyBar']);
+            Route::get('sales', [EconomyController::class, 'getMySales']);
+            Route::get('solarium', [EconomyController::class, 'getMySolarium']);
+            Route::get('keys', [EconomyController::class, 'getKeys']);
+        });
+    });
     // Штрафное списание услуги
     Route::apiResource('penalty', PenaltyController::class);
     // Восстановление услуги
@@ -64,12 +74,18 @@ Route::group([
         Route::get('/restored', [RequestController::class, 'getRestoredServiceRequests']);
     });
     // Получение данных для дэшборда
-    Route::get('dashboard/in-gym-clients', [DashboardController::class, 'getInGymClients']);
+    Route::group(['prefix' => 'dashboard'], function () {
+        Route::get('in-gym-clients', [DashboardController::class, 'getInGymClients']);
+        Route::get('guests', [DashboardController::class, 'getGuestsClients']);
+    });
     // Товары
     Route::post('products/{product}/batch', [ProductController::class, 'createProductBatch']);
     Route::apiResource('products/categories', ProductCategoryController::class);
     Route::apiResource('products', ProductController::class);
-
+    // Закладка клиентов
+    Route::delete('bookmarks/{id}', [ClientBookmarkController::class, 'deleteBookmark']);
+    Route::get('bookmarks', [ClientBookmarkController::class, 'index']);
+    Route::post('bookmarks', [ClientBookmarkController::class, 'store']);
 });
 
 require __DIR__ . '/auth.php';

@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Models\User|null $user
  * @property-read \App\Models\ServiceSale|null $service_sale
  * @property-read \App\Models\Session|null $session
+ * @method static \Illuminate\Database\Eloquent\Builder|SessionService today()
  */
 class SessionService extends Model
 {
@@ -65,5 +66,11 @@ class SessionService extends Model
 
     public function service_sale(): BelongsTo {
         return $this->belongsTo(ServiceSale::class, 'service_sale_id');
+    }
+
+    public function scopeToday($q) {
+        $q
+            ->whereDate('created_at', '>=', now()->startOfDay())
+            ->whereDate('created_at', '<=', now()->endOfDay());
     }
 }

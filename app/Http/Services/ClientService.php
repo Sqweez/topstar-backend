@@ -83,7 +83,7 @@ class ClientService {
                 $minutes -= $needleMinutes;
                 SessionService::create([
                     'user_id' => $payload['user_id'],
-                    'service_sale_id' => $item->id,
+                    'service_sale_id' => $item->salable_id,
                     'session_id' => optional($session)->id,
                     'minutes' => $needleMinutes
                 ]);

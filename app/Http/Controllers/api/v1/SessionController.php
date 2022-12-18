@@ -9,6 +9,7 @@ use App\Http\Resources\Client\SingleClientResource;
 use App\Http\Services\ClientService;
 use App\Models\Client;
 use App\Models\Trinket;
+use App\Repositories\Client\RetrieveSingleClient;
 use Illuminate\Http\JsonResponse;
 
 class SessionController extends ApiController
@@ -25,6 +26,7 @@ class SessionController extends ApiController
     public function writeOffSolarium(WriteOffSolariumRequest $request, ClientService $clientService): JsonResponse {
         $payload = $request->validated();
         $client = $clientService->writeOffSolarium($payload);
+        $client = RetrieveSingleClient::retrieve($client);
         $client = SingleClientResource::make($client);
         return $this->respondSuccess([
             'client' => $client

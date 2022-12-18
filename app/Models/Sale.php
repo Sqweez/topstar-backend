@@ -38,6 +38,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder|Sale whereUserId($value)
  * @mixin \Eloquent
  * @property-read \App\Models\Club|null $club
+ * @method static \Illuminate\Database\Eloquent\Builder|Sale barSales()
+ * @method static \Illuminate\Database\Eloquent\Builder|Sale shopSales()
  */
 class Sale extends Model
 {
@@ -66,5 +68,23 @@ class Sale extends Model
 
     public function club(): BelongsTo {
         return $this->belongsTo(Club::class);
+    }
+
+    public function scopeBarSales($query) {
+        return $query
+            ->whereHasMorph('salable', [ProductSale::class], function ($query) {
+                $query->whereHas('product', function ($query) {
+                    $query->where('product_type_id', __hardcoded(2));
+                });
+            });
+    }
+
+    public function scopeShopSales($query) {
+        return $query
+            ->whereHasMorph('salable', [ProductSale::class], function ($query) {
+                $query->whereHas('product', function ($query) {
+                    $query->where('product_type_id', __hardcoded(1));
+                });
+            });
     }
 }

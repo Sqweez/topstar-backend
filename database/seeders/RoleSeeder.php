@@ -21,7 +21,8 @@ class RoleSeeder extends Seeder
             'Бармен',
             'Модератор',
             'Тренер',
-            'Бухгалтер'
+            'Бухгалтер',
+            'Старший бармен'
         ];
         foreach ($roles as $key => $role) {
             Role::updateOrCreate(['id' => $key + 1], ['name' => $role]);

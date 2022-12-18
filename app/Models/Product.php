@@ -95,6 +95,7 @@ class Product extends Model
 
     public function decrementBatch($store_id) {
         $batch = ProductBatch::query()
+            ->where('product_id', $this->id)
             ->where('store_id', $store_id)
             ->where('quantity', '>', 0)
             ->oldest()

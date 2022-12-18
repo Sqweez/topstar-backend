@@ -35,4 +35,5 @@ class Role extends Model
     const ROLE_MODERATOR = 5;
     const ROLE_TRAINER = 6;
     const ROLE_ACCOUNTANT = 7;
+    const ROLE_SENIOR_BARTENDER = 8;
 }

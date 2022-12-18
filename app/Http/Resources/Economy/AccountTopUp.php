@@ -2,12 +2,12 @@
 
 namespace App\Http\Resources\Economy;
 
-use App\Models\Transaction;
-use Carbon\Carbon;
+use App\Models\ClientReplenishment;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
-* @mixin Transaction
+ * @mixin ClientReplenishment
  */
 
 class AccountTopUp extends JsonResource
@@ -15,11 +15,10 @@ class AccountTopUp extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param  Request  $request
+     * @return array
      */
-    public function toArray($request)
-    {
+    public function toArray($request): array {
         return [
             'id' => $this->id,
             'description' => $this->description,
@@ -27,7 +26,9 @@ class AccountTopUp extends JsonResource
             'amount' => $this->amount,
             'client' => $this->client,
             'club' => $this->club,
-            'date' => format_datetime($this->created_at)
+            'date' => format_datetime($this->created_at),
+            'payment_type_text' => $this->payment_type_text,
+            'payment_type' => $this->payment_type,
         ];
     }
 }

@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Resources\Client;
+namespace App\Http\Resources\Economy;
 
-use App\Models\Sale;
+use App\Models\SessionService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/* @mixin Sale */
+/* @mixin SessionService
+ */
 
-class ClientServiceSaleHistoryResource extends JsonResource
+class SolariumHistoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,12 +20,12 @@ class ClientServiceSaleHistoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'date' => format_datetime($this->created_at),
+            'client' => $this->session->client,
             'user' => $this->user,
-            'club' => $this->club,
-            'amount' => optional($this->transaction)->amount * -1,
-            'service' => $this->salable->service,
-            'minutes' => $this->salable->minutes ?: null,
+            'club' => $this->session->club,
+            'minutes' => $this->minutes,
+            'date' => format_datetime($this->created_at),
+            'created_at' => $this->created_at,
         ];
     }
 }
