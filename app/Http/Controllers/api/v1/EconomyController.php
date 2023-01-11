@@ -8,6 +8,7 @@ use App\Http\Resources\Client\ClientProductSaleHistoryResource;
 use App\Http\Resources\Economy\AccountTopUp;
 use App\Http\Resources\Economy\BarSaleHistoryResource;
 use App\Http\Resources\Economy\SolariumHistoryResource;
+use App\Http\Resources\WithDrawal\WithDrawalListResource;
 use App\Http\Services\EconomyService;
 use App\Models\ClientReplenishment;
 use App\Models\ProductSale;
@@ -15,6 +16,8 @@ use App\Models\Sale;
 use App\Models\Service;
 use App\Models\SessionService;
 use App\Models\Trinket;
+use App\Models\WithDrawal;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -41,21 +44,45 @@ class EconomyController extends ApiController
         ]);
     }
 
-    public function getMyTopUps(): AnonymousResourceCollection {
-        $transactions = ClientReplenishment::query()
-            ->whereDate('created_at', '>=', now()->startOfDay())
-            ->whereDate('created_at', '<=', now()->endOfDay())
-            ->where('user_id', auth()->id())
-            ->with(['club:id,name', 'client:id,name', 'user:id,name'])
-            ->orderByDesc('created_at')
-            ->get();
-        return AccountTopUp::collection($transactions);
+    public function getMyTopUps(): \Illuminate\Support\Collection {
+        $transactions = AccountTopUp::collection(
+            ClientReplenishment::query()
+                ->whereDate('created_at', '>=', now()->startOfDay())
+                ->whereDate('created_at', '<=', now()->endOfDay())
+                ->where('user_id', auth()->id())
+                ->with(['club:id,name', 'client:id,name', 'user:id,name'])
+                ->orderByDesc('created_at')
+                ->get()
+        );
+        $withdrawals = WithDrawalListResource::collection(
+            WithDrawal::query()
+                ->whereDate('created_at', '>=', now()->startOfDay())
+                ->whereDate('created_at', '<=', now()->endOfDay())
+                ->where('user_id', auth()->id())
+                ->with(['club:id,name'])
+                ->orderByDesc('created_at')
+                ->get()
+        );
+
+        return $transactions
+            ->collection
+            ->mergeRecursive(
+                $withdrawals->collection
+            )
+            ->sortBy('created_at')
+            ->values();
     }
 
-    public function getMyBar(): AnonymousResourceCollection {
+    public function getMyWithDrawals(): AnonymousResourceCollection {
+        return WithDrawalListResource::collection([]);
+    }
+
+    public function getMyBar(Request $request): AnonymousResourceCollection {
+        $start = Carbon::parse($request->get('start'));
+        $finish = Carbon::parse($request->get('finish'));
         $barProductSales = Sale::query()
-            ->whereDate('created_at', '>=', now()->startOfDay())
-            ->whereDate('created_at', '<=', now()->endOfDay())
+            ->whereDate('created_at', '>=', $start->startOfDay())
+            ->whereDate('created_at', '<=', $finish->endOfDay())
             ->barSales()
             ->when(!auth()->user()->getIsBossAttribute(), function ($query) {
                 return $query->where('club_id', auth()->user()->club_id);

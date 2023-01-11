@@ -14,7 +14,8 @@ use App\Http\Controllers\api\v1\{ClientBookmarkController,
     SaleController,
     ServiceController,
     SessionController,
-    UserController};
+    UserController,
+    WithDrawalController};
 use Illuminate\Support\Facades\Route;
 
 
@@ -57,6 +58,7 @@ Route::group([
         Route::get('/', [EconomyController::class, 'index']);
         Route::group(['prefix' => 'my'], function () {
             Route::get('top-ups', [EconomyController::class, 'getMyTopUps']);
+            Route::get('withdrawals', [EconomyController::class, 'getMyWithDrawals']);
             Route::get('bar', [EconomyController::class, 'getMyBar']);
             Route::get('sales', [EconomyController::class, 'getMySales']);
             Route::get('solarium', [EconomyController::class, 'getMySolarium']);
@@ -86,6 +88,9 @@ Route::group([
     Route::delete('bookmarks/{id}', [ClientBookmarkController::class, 'deleteBookmark']);
     Route::get('bookmarks', [ClientBookmarkController::class, 'index']);
     Route::post('bookmarks', [ClientBookmarkController::class, 'store']);
+    Route::group(['prefix' => 'withdrawals'], function () {
+        Route::post('/', [WithDrawalController::class, 'store']);
+    });
 });
 
 require __DIR__ . '/auth.php';

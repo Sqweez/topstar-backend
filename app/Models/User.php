@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -88,6 +89,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read bool $is_seller
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Club[] $clubs
  * @property-read int|null $clubs_count
+ * @property-read bool $is_bartender
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\WithDrawal[] $withdrawals
+ * @property-read int|null $withdrawals_count
  */
 class User extends Authenticatable implements JWTSubject, HasMedia
 {
@@ -138,6 +142,11 @@ class User extends Authenticatable implements JWTSubject, HasMedia
         return $this
             ->belongsToMany(Club::class, 'club_user', 'user_id')
             ->select(['id', 'name']);
+    }
+
+    public function withdrawals(): HasMany {
+        return $this
+            ->hasMany(WithDrawal::class);
     }
 
     public function hasRole(string $roleName): bool {
@@ -191,11 +200,20 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     }
 
     public function canTopUpAccount(): bool {
-        return $this->getIsBossAttribute() || $this->roles->contains('id', Role::ROLE_SELLER);
+        return $this->getIsBossAttribute()
+            || $this->roles->contains('id', Role::ROLE_SELLER)
+            || $this->roles->contains('id', Role::ROLE_SENIOR_BARTENDER)
+            || $this->roles->contains('id', Role::ROLE_BARTENDER);
     }
 
     public function canWriteOffServices(): bool {
         return $this->getIsBossAttribute() || $this->roles->contains('id', Role::ROLE_ADMIN);
+    }
+
+    public function canSeePurchasedServices(): bool {
+        return $this->getIsBossAttribute()
+            || $this->roles->contains('id', Role::ROLE_ADMIN)
+            || $this->roles->contains('id', Role::ROLE_SELLER);
     }
 
     public function canSaleProducts(): bool {
@@ -214,7 +232,9 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     }
 
     public function canOpenSession(): bool {
-        return $this->getIsBossAttribute() || $this->roles->contains('id', Role::ROLE_ADMIN);
+        return $this->getIsBossAttribute()
+            || $this->roles->contains('id', Role::ROLE_ADMIN)
+            || $this->roles->contains('id', Role::ROLE_SELLER);
     }
 
     public function canCreateClients(): bool {

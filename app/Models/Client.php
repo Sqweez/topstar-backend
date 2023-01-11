@@ -89,6 +89,8 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @method static \Illuminate\Database\Query\Builder|Client withoutTrashed()
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ClientReplenishment[] $replenishments
  * @property-read int|null $replenishments_count
+ * @property-read string $age_type
+ * @property-read bool $is_birthday
  */
 class Client extends Model implements HasMedia
 {
@@ -187,6 +189,26 @@ class Client extends Model implements HasMedia
             return 'Неизвестно';
         }
         return now()->diffInYears($this->birth_date);
+    }
+
+    public function getAgeTypeAttribute(): string {
+        if (!$this->birth_date) {
+            return 'Взрослый';
+        }
+        if ($this->getAgeAttribute() < 14) {
+            return 'Ребенок';
+        }
+        if ($this->getAgeAttribute() >= 60) {
+            return 'Элегант';
+        }
+        return 'Взрослый';
+    }
+
+    public function getIsBirthdayAttribute(): bool {
+        if (!$this->birth_date) {
+            return false;
+        }
+        return Carbon::parse($this->birth_date)->isBirthday();
     }
 
     public function getTrinketCanGivenAttribute(): bool {

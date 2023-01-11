@@ -37,6 +37,7 @@ class AuthUserResource extends JsonResource
             'permissions' => [
                 'can_top_up_account' => $this->canTopUpAccount(),
                 'can_write_off_services' => $this->canWriteOffServices(),
+                'can_see_purchased_services' => $this->canSeePurchasedServices(),
                 'can_sale_products' => $this->canSaleProducts(),
                 'can_sale_bar' => $this->canSaleBar(),
                 'can_open_session' => $this->canOpenSession(),

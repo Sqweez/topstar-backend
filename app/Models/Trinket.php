@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read \App\Models\Session|null $active_session
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Session[] $sessions
  * @property-read int|null $sessions_count
+ * @property-read \App\Models\Club $club
  */
 class Trinket extends Model
 {

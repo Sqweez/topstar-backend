@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Http\Resources\Economy;
+namespace App\Http\Resources\WithDrawal;
 
-use App\Models\ClientReplenishment;
+use App\Models\WithDrawal;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/**
- * @mixin ClientReplenishment
- */
+/* @mixin WithDrawal */
 
-class AccountTopUp extends JsonResource
+class WithDrawalListResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -24,13 +23,13 @@ class AccountTopUp extends JsonResource
             'description' => $this->description,
             'user' => $this->user,
             'amount' => $this->amount,
-            'client' => $this->client,
+            'client' => ['name' => 'Списание'],
             'club' => $this->club,
             'date' => format_datetime($this->created_at),
             'payment_type_text' => $this->payment_type_text,
             'payment_type' => $this->payment_type,
             'created_at' => $this->created_at,
-            'type' => 'top-up'
+            'type' => 'withdrawal'
         ];
     }
 }
