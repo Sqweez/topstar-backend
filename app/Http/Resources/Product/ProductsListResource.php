@@ -31,6 +31,7 @@ class ProductsListResource extends JsonResource
             'product_type' => $this->product_type,
             'quantity' => $this->collectQuantities(),
             'barcode' => $this->barcode,
+            'batches' => $this->batches,
         ];
     }
 }

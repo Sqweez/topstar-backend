@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CreateProductRequest extends FormRequest
 {
@@ -26,7 +27,10 @@ class CreateProductRequest extends FormRequest
             'name' => 'required|string',
             'price' => 'required|integer|min:0',
             'product_category_id' => 'required',
-            'barcode' => 'sometimes',
+            'barcode' => [
+                'sometimes',
+                Rule::unique('products')
+            ],
             'product_type_id' => 'required',
             'attribute' => 'string'
         ];

@@ -240,7 +240,7 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     public function canCreateClients(): bool {
         return $this->getIsBossAttribute()
             || $this->roles->contains('id', Role::ROLE_ADMIN)
-            || $this->roles->contains('id', Role::ROLE_MODERATOR);
+            || $this->roles->contains('id', Role::ROLE_SELLER);
     }
 
     public function getJWTIdentifier() {

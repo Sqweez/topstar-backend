@@ -43,4 +43,12 @@ class ProductBatch extends Model
     public function club(): BelongsTo {
         return $this->belongsTo(Club::class, 'store_id');
     }
+
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class, 'user_id')
+            ->select(['id', 'name'])
+            ->withDefault([
+                'name' => 'Удаленный сотрудник'
+            ]);
+    }
 }

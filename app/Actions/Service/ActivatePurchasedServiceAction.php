@@ -17,7 +17,8 @@ class ActivatePurchasedServiceAction {
             $activeUntil = now()->addYears(100);
         }
         $serviceSale->update([
-            'active_until' => $activeUntil
+            'active_until' => $activeUntil,
+            'activated_at' => now()
         ]);
         return $serviceSale->sale;
     }

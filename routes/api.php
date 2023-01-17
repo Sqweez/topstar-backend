@@ -82,6 +82,7 @@ Route::group([
     });
     // Товары
     Route::post('products/{product}/batch', [ProductController::class, 'createProductBatch']);
+    Route::get('products/{product}/batch', [ProductController::class, 'getProductBatchesInformation']);
     Route::apiResource('products/categories', ProductCategoryController::class);
     Route::apiResource('products', ProductController::class);
     // Закладка клиентов

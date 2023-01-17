@@ -7,10 +7,11 @@ use App\Models\Client;
 use App\Models\Sale;
 use App\Models\Service;
 use App\Models\ServiceSale;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class GetClientServiceHistoryAction {
 
-    public function handle(Client $client, $service_id = null) {
+    public function handle(Client $client, $service_id = null): AnonymousResourceCollection {
         $programs = Sale::query()
             ->where('client_id', $client->id)
             ->whereHasMorph('salable', [ServiceSale::class], function ($query) {
@@ -29,6 +30,8 @@ class GetClientServiceHistoryAction {
             ->with('salable.visits.trainer')
             ->with('salable.visits.user')
             ->with('salable.visits.session.club')
+            ->with('user:id,name')
+            ->with('transaction')
             ->get();
 
         return ClientPurchasedServiceHistoryResource::collection($programs);

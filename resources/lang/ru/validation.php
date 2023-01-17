@@ -145,7 +145,8 @@ return [
         'password' => 'пароль',
         'pass' => 'карта',
         'description' => 'описание',
-        'penalty_date' => 'дата списания'
+        'penalty_date' => 'дата списания',
+        'barcode' => 'штрих-код|артикул'
     ],
 
 ];

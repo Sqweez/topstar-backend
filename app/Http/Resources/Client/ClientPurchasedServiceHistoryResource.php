@@ -71,8 +71,12 @@ class ClientPurchasedServiceHistoryResource extends JsonResource
         return [
             'id' => $service->id,
             'name' => $service->service->name,
+            'purchase_date' => format_datetime($this->created_at),
+            'activated_at' => format_datetime($service->activated_at),
             'visits' => $combinedVisits,
-            'restores' => $restores
+            'restores' => $restores,
+            'price' => $this->transaction->amount * -1,
+            'user' => $this->user,
         ];
     }
 }
