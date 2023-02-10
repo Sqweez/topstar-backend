@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Console\Commands\Utils;
+namespace App\Console\Commands\Imports;
 
 use App\Http\Services\PassService;
 use App\Models\User;
 use Carbon\Carbon;
+use Carbon\Exceptions\InvalidFormatException;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileCannotBeAdded;
 
 class ImportUsers extends Command
 {
@@ -38,22 +40,34 @@ class ImportUsers extends Command
      * Execute the console command.
      *
      * @return int
-     * @throws \Spatie\MediaLibrary\MediaCollections\Exceptions\FileCannotBeAdded
+     * @throws FileCannotBeAdded
      */
     public function handle(): int {
         $users = $this->getUsersList();
-        User::each(function ($user) {
-            $user->forceDelete();
-        });
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('users')->truncate();
+        \DB::table('role_user')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         collect($users)->each(function ($user) {
             $this->line($user->name);
+
+            try {
+                $birth_date = $user->birthday !== '0000-00-00' ? Carbon::parse($user->birthday): now();
+            } catch (InvalidFormatException $exception) {
+                \Log::error($exception->getMessage());
+                $birth_date = now();
+            }
+
             $_user = User::create([
                 'id' => $user->id,
                 'name' => $user->name,
                 'description' => $user->opisanie,
-                'birth_date' => Carbon::parse($user->birthday),
+                'birth_date' => $birth_date,
                 'club_id' => str_replace('club', '', $user->clubid),
-                'phone' => mask_phone_old($user->phone)
+                'phone' => '+7' . unmask_phone($user->phone),
+                // 123456
+                'password' => '$2y$10$RIQoz7GjS5sMy4VuXSay.OpeCnl5U6E8BYtl9Dcsou9C0G8W.HqXa',
+                'is_active' => $user->status == 0
             ]);
 
             if ($user->cardid) {
@@ -83,12 +97,12 @@ class ImportUsers extends Command
 
             $_user->roles()->sync($roles);
 
-            if ($user->photo) {
+            /*if ($user->photo) {
                 $this->line($user->photo);
                 $_user
                     ->addMediaFromUrl(sprintf("http://top-star.kz/photos/%s", $user->photo))
                     ->toMediaCollection(\App\Models\User::MEDIA_AVATAR);;
-            }
+            }*/
 
         });
 

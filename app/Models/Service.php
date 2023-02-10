@@ -57,6 +57,13 @@ class Service extends Model
 
     protected $guarded = [];
 
+    protected static function boot() {
+        parent::boot();
+        static::addGlobalScope('order', function ($builder) {
+            $builder->orderBy('name', 'asc');
+        });
+    }
+
     const TYPE_UNLIMITED = 1;
     const TYPE_SOLARIUM = 2;
     const TYPE_PROGRAM = 3;

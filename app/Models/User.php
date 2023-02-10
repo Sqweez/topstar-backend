@@ -100,7 +100,7 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     /**
      * The attributes that are mass assignable.
      */
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     const MEDIA_AVATAR = 'user_avatars';
 

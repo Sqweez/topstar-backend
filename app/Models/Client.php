@@ -106,6 +106,14 @@ class Client extends Model implements HasMedia
         'club_id' => 'integer'
     ];
 
+
+    protected static function boot() {
+        parent::boot();
+        static::addGlobalScope('order', function ($builder) {
+            $builder->orderBy('name', 'asc');
+        });
+    }
+
     public function pass(): MorphOne {
         return $this->morphOne(Pass::class, 'passable');
     }

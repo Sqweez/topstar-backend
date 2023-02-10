@@ -45,7 +45,7 @@ class Sale extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     const TYPE_SERVICE = 'service';
     const TYPE_PRODUCT = 'product';
@@ -63,7 +63,10 @@ class Sale extends Model
     }
 
     public function user(): BelongsTo {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withDefault([
+            'id' => null,
+            'name' => 'Удаленный сотрудник'
+        ]);
     }
 
     public function club(): BelongsTo {

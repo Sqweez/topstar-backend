@@ -40,6 +40,8 @@ class ServiceController extends ApiController
     public function index()
     {
         $services = Service::query()
+            ->where('is_active', true)
+            ->where('price', '!=', 5)
             ->with('club')
             ->get();
         return ServicesListResource::collection($services);
