@@ -99,10 +99,17 @@ class User extends Authenticatable implements JWTSubject, HasMedia
 {
     use HasFactory, Notifiable, SoftDeletes, HasPass, InteractsWithMedia, HasPass;
 
+    protected static function boot() {
+        parent::boot();
+        static::addGlobalScope('order', function ($builder) {
+            $builder->orderBy('name', 'asc');
+        });
+    }
+
     /**
      * The attributes that are mass assignable.
      */
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     const MEDIA_AVATAR = 'user_avatars';
 

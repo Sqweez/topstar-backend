@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\Session
@@ -49,6 +50,10 @@ class Session extends Model
 
     public function client(): BelongsTo {
         return $this->belongsTo(Client::class);
+    }
+
+    public function session_service(): HasOne {
+        return $this->hasOne(SessionService::class, 'session_id');
     }
 
     public function start_user(): BelongsTo {

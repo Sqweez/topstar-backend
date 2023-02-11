@@ -80,7 +80,7 @@ class ImportSales extends Command
 
     public function handle(): int {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-      /*  \DB::table('sales')->truncate();
+        /*\DB::table('sales')->truncate();
         \DB::table('service_sale')->truncate();
         \DB::table('transactions')->truncate();*/
         $hasData = true;
@@ -100,6 +100,7 @@ class ImportSales extends Command
             $this->line('Импортировано ' . $page * 1000);
             $page++;
         }
+        ServiceSale::whereServiceId(1174)->update(['entries_count' => 1]);
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         return 0;
     }

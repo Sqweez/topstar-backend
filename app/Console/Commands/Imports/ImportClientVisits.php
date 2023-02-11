@@ -46,6 +46,13 @@ class ImportClientVisits extends Command
     public function handle()
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        /*Session::query()
+            ->whereHas('session_service', function ($q) {
+                return $q->whereNull('minutes');
+            })
+            ->delete();
+        SessionService::whereNull('minutes')->delete();
+        $this->line('Закончено удаление');*/
       /*  \DB::table('sessions')->truncate();
         \DB::table('session_services')->truncate();*/
         $hasData = true;
@@ -77,32 +84,16 @@ class ImportClientVisits extends Command
                     'trinket_id' => null,
                 ]);
 
-
-                $serviceSaleId = $item->iduslugi;
-
-                if ($serviceTypeId === Service::TYPE_SOLARIUM) {
-                    $serviceSale = ServiceSale::query()
-                        ->whereHas('sale', function ($query) use ($session) {
-                            $query->where('client_id', $session->client_id);
-                        })
-                        ->whereHas('service', function ($query) {
-                            return $query->where('service_type_id', Service::TYPE_SOLARIUM);
-                        })
-                        ->first();
-
-                    $serviceSaleId = $serviceSale ? $serviceSale->id : $item->iduslugi;
-                }
-
                 $sessionService = SessionService::create([
-                    'service_sale_id' => $serviceSaleId,
+                    'service_sale_id' => $item->iduslugi,
                     'user_id' => $item->kto,
                     'session_id' => $session->id,
-                    'minutes' => $serviceTypeId === Service::TYPE_SOLARIUM ? $item->kolvo : null,
+                    'minutes' => null,
                     'created_at' => $item->data,
                     'updated_at' => $item->data,
                 ]);
             });
-            $this->line('Импортировано ' . $page * 1000);
+            $this->line('Импортировано ' . $page * 10000);
             $page++;
         }
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
