@@ -67,6 +67,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read bool $is_bartender
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\WithDrawal[] $withdrawals
  * @property-read int|null $withdrawals_count
+ * @property int $is_active
+ * @method static Builder|Employee whereIsActive($value)
  */
 class Employee extends User
 {

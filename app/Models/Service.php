@@ -50,6 +50,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $restore_price
  * @method static \Illuminate\Database\Eloquent\Builder|Service whereRestorePrice($value)
  * @property-read int|null $computed_validity_days
+ * @property int $is_active
+ * @method static \Illuminate\Database\Eloquent\Builder|Service whereIsActive($value)
  */
 class Service extends Model
 {

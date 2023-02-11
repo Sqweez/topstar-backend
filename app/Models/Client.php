@@ -91,6 +91,8 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property-read int|null $replenishments_count
  * @property-read string $age_type
  * @property-read bool $is_birthday
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sale[] $lastPrograms
+ * @property-read int|null $last_programs_count
  */
 class Client extends Model implements HasMedia
 {

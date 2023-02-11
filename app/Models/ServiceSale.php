@@ -58,6 +58,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property-read string|null $days_remaining
  * @property string|null $self_name
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceSale whereSelfName($value)
+ * @property string|null $activated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSale whereActivatedAt($value)
  */
 class ServiceSale extends Model
 {
@@ -156,7 +158,8 @@ class ServiceSale extends Model
         return !$this->getCanBeUsedAttribute()
             && $this->getIsActivatedAttribute()
             && $this->getRemainingVisitsAttribute() > 0
-            && $this->service->restore_price > 0;
+            && $this->service->restore_price > 0
+            && $this->service->is_active;
     }
 
     public function getAlreadyWrittenOffAttribute(): bool {

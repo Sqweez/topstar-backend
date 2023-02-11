@@ -40,6 +40,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \App\Models\ProductCategory|null $category
  * @property-read string $product_type
  * @property-read string $fullname
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static \Illuminate\Database\Query\Builder|Product onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|Product withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Product withoutTrashed()
  */
 class Product extends Model
 {

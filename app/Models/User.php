@@ -92,6 +92,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read bool $is_bartender
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\WithDrawal[] $withdrawals
  * @property-read int|null $withdrawals_count
+ * @property int $is_active
+ * @method static Builder|User whereIsActive($value)
  */
 class User extends Authenticatable implements JWTSubject, HasMedia
 {

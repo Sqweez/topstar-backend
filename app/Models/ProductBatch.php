@@ -29,6 +29,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @mixin \Eloquent
  * @property-read \App\Models\Product|null $product
  * @property-read \App\Models\Club|null $club
+ * @property int $initial_quantity
+ * @property int|null $user_id
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductBatch whereInitialQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ProductBatch whereUserId($value)
  */
 class ProductBatch extends Model
 {
