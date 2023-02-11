@@ -126,6 +126,10 @@ class ImportSales extends Command
         }
         $entriesCount = $serviceTypeId === Service::TYPE_PROGRAM ? $sale->kolvo : null;
 
+        if ($sale->uslugi == 1174) {
+            $entriesCount = 1;
+        }
+
         try {
             $activeUntil = $sale->dataend !== '0000-00-00' ? Carbon::parse($sale->dataend): now()->addYear();
         } catch (InvalidFormatException $exception) {

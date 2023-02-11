@@ -32,7 +32,7 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'phone' => 'required|string|unique:users,phone,' . $this->id,
+            'phone' => 'required|string',
             'birth_date' => 'required|date|before:today|after:' . now()->subYears(100),
             'roles' => 'required|array',
             'pass' => ['sometimes', new NotBusyPass($this->id, User::class)],
