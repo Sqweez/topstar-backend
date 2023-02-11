@@ -46,8 +46,8 @@ class ImportClientVisits extends Command
     public function handle()
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('sessions')->truncate();
-        \DB::table('session_services')->truncate();
+      /*  \DB::table('sessions')->truncate();
+        \DB::table('session_services')->truncate();*/
         $hasData = true;
         $page = 1;
         while ($hasData) {
@@ -77,8 +77,24 @@ class ImportClientVisits extends Command
                     'trinket_id' => null,
                 ]);
 
+
+                $serviceSaleId = $item->iduslugi;
+
+                if ($serviceTypeId === Service::TYPE_SOLARIUM) {
+                    $serviceSale = ServiceSale::query()
+                        ->whereHas('sale', function ($query) use ($session) {
+                            $query->where('client_id', $session->client_id);
+                        })
+                        ->whereHas('service', function ($query) {
+                            return $query->where('service_type_id', Service::TYPE_SOLARIUM);
+                        })
+                        ->first();
+
+                    $serviceSaleId = $serviceSale ? $serviceSale->id : $item->iduslugi;
+                }
+
                 $sessionService = SessionService::create([
-                    'service_sale_id' => $item->iduslugi,
+                    'service_sale_id' => $serviceSaleId,
                     'user_id' => $item->kto,
                     'session_id' => $session->id,
                     'minutes' => $serviceTypeId === Service::TYPE_SOLARIUM ? $item->kolvo : null,

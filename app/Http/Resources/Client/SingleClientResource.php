@@ -40,7 +40,7 @@ class SingleClientResource extends JsonResource
             'is_birthday_today' => $this->is_birthday,
             'description' => $this->description,
             'sales' => $this->sales,
-            'programs' => ClientPurchasedServices::collection($this->programs),
+            'programs' => ClientPurchasedServices::collection($this->lastPrograms),
             'solarium' => ClientPurchasedSolarium::collection($this->solarium),
             'trinket' => $this->trinket->code ?? null,
             'cabinet_number' => $this->trinket->cabinet_number ?? null,

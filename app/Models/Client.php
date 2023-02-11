@@ -157,6 +157,10 @@ class Client extends Model implements HasMedia
             ->latest();
     }
 
+    public function lastPrograms(): HasMany {
+        return $this->programs()->limit(10);
+    }
+
     public function solarium(): HasMany {
         return $this
             ->sales()

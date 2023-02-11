@@ -80,9 +80,9 @@ class ImportSales extends Command
 
     public function handle(): int {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('sales')->truncate();
+      /*  \DB::table('sales')->truncate();
         \DB::table('service_sale')->truncate();
-        \DB::table('transactions')->truncate();
+        \DB::table('transactions')->truncate();*/
         $hasData = true;
         $page = 1;
         while ($hasData) {

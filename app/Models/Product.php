@@ -46,7 +46,7 @@ class Product extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     public function category(): BelongsTo {
         return $this->belongsTo(ProductCategory::class, 'product_category_id');

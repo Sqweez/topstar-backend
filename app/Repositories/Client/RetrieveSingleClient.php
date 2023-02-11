@@ -10,11 +10,11 @@ class RetrieveSingleClient {
         $client->load('pass');
         $client->load('registrar');
         $client->load('club');
-        $client->load('programs.salable.service');
-        $client->load('programs.salable.restores');
+        $client->load('lastPrograms.salable.service');
+        $client->load('lastPrograms.salable.restores');
+        $client->load('lastPrograms.salable.visits.trainer');
+        $client->load('lastPrograms.club');
         $client->load('solarium.salable.service');
-        $client->load('programs.salable.visits.trainer');
-        $client->load('programs.club');
         $client->load('active_session');
         return $client;
     }
