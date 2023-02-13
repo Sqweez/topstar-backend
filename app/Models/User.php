@@ -128,7 +128,8 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-        'club_id' => 'integer'
+        'club_id' => 'integer',
+        'is_active' => 'boolean'
     ];
 
     public function pass(): MorphOne {

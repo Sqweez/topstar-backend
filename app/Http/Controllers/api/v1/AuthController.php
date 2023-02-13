@@ -59,7 +59,7 @@ class AuthController extends ApiController
         if (!$user) {
             return $this->respondError('Учетная запись не найдена или неактивна', 403);
         }
-        if (!$token = Auth::attempt(['phone' => $login, 'password' => $password])) {
+        if (!$token = Auth::attempt(['phone' => $login, 'password' => $password, 'is_active' => true])) {
             return $this->respondError('Неверные логин и пароль!', 403);
         }
         return $this->respondWithToken($token);
