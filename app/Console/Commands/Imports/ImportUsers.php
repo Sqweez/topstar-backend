@@ -70,7 +70,7 @@ class ImportUsers extends Command
                 'is_active' => $user->status == 0
             ]);
 
-            if ($user->cardid) {
+            if ($user->cardid && $user->status == 0) {
                 $pass = PassService::createPass($user->cardid);
                 $_user->pass()->save($pass);
             }

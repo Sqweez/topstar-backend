@@ -45,6 +45,7 @@ class AuthController extends ApiController
     private function loginViaCard($pass): JsonResponse {
         $user = User::query()
             ->pass($pass)
+            ->active()
             ->first();
 
         if (!$user || !$token = Auth::login($user)) {
@@ -54,6 +55,10 @@ class AuthController extends ApiController
     }
 
     private function loginViaCredentials($login, $password): JsonResponse {
+        $user = User::where('phone', $login)->active()->first();
+        if (!$user) {
+            return $this->respondError('Учетная запись не найдена или неактивна', 403);
+        }
         if (!$token = Auth::attempt(['phone' => $login, 'password' => $password])) {
             return $this->respondError('Неверные логин и пароль!', 403);
         }

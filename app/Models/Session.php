@@ -41,6 +41,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Session whereTrinketId($value)
  * @property-read mixed $time_duration
  * @method static \Illuminate\Database\Eloquent\Builder|Session today()
+ * @property int $is_system_finished
+ * @property-read \App\Models\SessionService|null $session_service
+ * @method static \Illuminate\Database\Eloquent\Builder|Session whereIsSystemFinished($value)
  */
 class Session extends Model
 {

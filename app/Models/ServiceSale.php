@@ -67,7 +67,7 @@ class ServiceSale extends Model
 
     protected $table = 'service_sale';
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     public function service(): BelongsTo {
         return $this->belongsTo(Service::class);

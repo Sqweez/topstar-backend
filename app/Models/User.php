@@ -94,6 +94,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read int|null $withdrawals_count
  * @property int $is_active
  * @method static Builder|User whereIsActive($value)
+ * @method static Builder|User active()
  */
 class User extends Authenticatable implements JWTSubject, HasMedia
 {
@@ -156,6 +157,10 @@ class User extends Authenticatable implements JWTSubject, HasMedia
     public function withdrawals(): HasMany {
         return $this
             ->hasMany(WithDrawal::class);
+    }
+
+    public function scopeActive($q) {
+        $q->where('is_active', true);
     }
 
     public function hasRole(string $roleName): bool {

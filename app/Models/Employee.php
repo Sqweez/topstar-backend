@@ -69,6 +69,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read int|null $withdrawals_count
  * @property int $is_active
  * @method static Builder|Employee whereIsActive($value)
+ * @method static Builder|User active()
  */
 class Employee extends User
 {

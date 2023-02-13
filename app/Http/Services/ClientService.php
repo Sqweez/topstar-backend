@@ -109,6 +109,7 @@ class ClientService {
         $session->update([
             'finish_user_id' => auth()->id(),
             'finished_at' => now(),
+            'is_system_finished' => app()->runningInConsole()
         ]);
     }
 }
