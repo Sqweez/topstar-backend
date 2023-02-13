@@ -30,6 +30,8 @@ Route::group([
     Route::apiResource('users', UserController::class);
     // Пополнение баланса
     Route::post('clients/{client}/top-up', [ClientController::class, 'topUpClientAccount']);
+    // Переоформление карты
+    Route::post('clients/{client}/pass', [ClientController::class, 'remakePass']);
     // История клиента
     Route::get('clients/{client}/history', [ClientController::class, 'getClientHistory']);
     Route::get('clients/search', [ClientController::class, 'search']);
@@ -79,6 +81,7 @@ Route::group([
     Route::group(['prefix' => 'dashboard'], function () {
         Route::get('in-gym-clients', [DashboardController::class, 'getInGymClients']);
         Route::get('guests', [DashboardController::class, 'getGuestsClients']);
+        Route::get('birthday', [DashboardController::class, 'getBirthdayClients']);
     });
     // Товары
     Route::post('products/{product}/batch', [ProductController::class, 'createProductBatch']);

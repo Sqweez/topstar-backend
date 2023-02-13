@@ -32,6 +32,7 @@ class UpdateClientRequest extends FormRequest
             'pass' => ['sometimes', new NotBusyPass($this->id, Client::class)],
             'description' => 'sometimes',
             'photo' => 'sometimes|file',
+            'cached_pass' => 'sometimes',
             'phone' => [
                 'required',
                 Rule::unique('clients', 'phone')
@@ -44,6 +45,7 @@ class UpdateClientRequest extends FormRequest
         $this->merge([
             'phone' => unmask_phone($this->phone),
             'description' => $this->description === 'null' ? '' : $this->description,
+            'cached_pass' => $this->pass
         ]);
     }
 }

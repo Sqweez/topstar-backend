@@ -145,7 +145,7 @@ class ServiceSale extends Model
         if (!$this->getIsActivatedAttribute()) {
             return false;
         }
-        return !Carbon::parse($this->active_until)->greaterThanOrEqualTo(now());
+        return !Carbon::parse($this->active_until)->greaterThanOrEqualTo(today());
     }
 
     public function getCanBeUsedAttribute(): bool {

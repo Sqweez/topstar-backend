@@ -4,12 +4,8 @@ namespace App\Http\Resources\Client;
 
 use App\Models\Client;
 use Illuminate\Http\Resources\Json\JsonResource;
-
-/**
-* @mixin Client
- */
-
-class ClientListResource extends JsonResource
+/* @mixin Client */
+class BirthdayClientListResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -23,12 +19,6 @@ class ClientListResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'phone' => mask_phone($this->phone),
-            'registrar' => $this->whenLoaded($this->registrar->name),
-            'club' => $this->club,
-            'balance' => $this->balance,
-            'pass' => $this->cached_pass,
-            'trinket' => $this->cached_trinket,
-            'is_in_club' => $this->is_in_club,
         ];
     }
 }

@@ -72,11 +72,15 @@ class ImportClients extends Command
                 'club_id' => str_replace('club', '', $client->club),
                 'user_id' => $client->who == 0 ? null : $client->who,
                 'created_at' => $created_at,
-                'gender' => intval($client->pol) === 1 ? 'M' : 'F'
+                'gender' => intval($client->pol) === 1 ? 'M' : 'F',
+                'cached_pass' => $client->cardid
             ]);
 
-            $pass = PassService::createPass($client->cardid);
-            $_client->pass()->save($pass);
+            if ($client->cardid) {
+                $pass = PassService::createPass($client->cardid);
+                $_client->pass()->save($pass);
+            }
+
             /*if ($client->photo) {
                 $photoExtension = explode('.', $client->photo)[1];
                 if (in_array($photoExtension, ['jpeg', 'jpg', 'png'])) {

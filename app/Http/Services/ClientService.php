@@ -106,6 +106,7 @@ class ClientService {
 
     public function finish(Client $client) {
         $session = $client->active_session;
+        $client->update(['cached_trinket' => null]);
         $session->update([
             'finish_user_id' => auth()->id(),
             'finished_at' => now(),

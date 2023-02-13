@@ -47,6 +47,9 @@ class SessionController extends ApiController
         $client->active_session->update([
             'trinket_id' => $trinket->id,
         ]);
+        $client->update([
+            'cached_trinket' => $request->get('code')
+        ]);
         return $this->respondSuccess([
             'client' => SingleClientResource::make($client)
         ], 'Ключ успешно выдан!');

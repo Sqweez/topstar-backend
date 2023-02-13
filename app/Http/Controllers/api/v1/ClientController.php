@@ -13,6 +13,8 @@ use App\Http\Resources\Client\SingleClientResource;
 use App\Http\Services\ClientService;
 use App\Http\Services\TransactionService;
 use App\Models\Client;
+use App\Models\Pass;
+use App\Models\Transaction;
 use App\Repositories\Client\RetrieveSingleClient;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -40,8 +42,8 @@ class ClientController extends ApiController {
             ->where(function (Builder $query) use ($search) {
                 $query->where('name', 'like', prepare_search_string($search))
                     ->orWhere('phone', 'like', prepare_search_string($search))
-                    ->orWhereHas('pass', fn($query) => $query->whereCode($search))
-                    ->orWhereHas('active_session', fn($query) => $query->whereHas('trinket', fn($query) => $query->whereCode($search)));
+                    ->orWhere('cached_pass', $search)
+                    ->orWhere('cached_trinket', $search);
             })
             ->with(['club', 'pass', 'active_session.trinket'])
             ->get();
@@ -116,5 +118,29 @@ class ClientController extends ApiController {
         return $this->respondSuccessNoReport([
             'history' => $history
         ]);
+    }
+
+    public function remakePass(Client $client, Request $request) {
+        $code = $request->get('pass');
+        $pass = Pass::whereCode($code)->first();
+        if ($pass) {
+            return $this->respondError('Данная карта уже привязана к другому клиенту или сотруднику!');
+        }
+        $client->pass()->delete();
+        $client->pass()->create(['code' => $code]);
+        Transaction::create([
+            'transactional_type' => '',
+            'transactional_id' => null,
+            'client_id' => $client->id,
+            'user_id' => auth()->id(),
+            'club_id' => auth()->user()->club_id,
+            'amount' => __hardcoded(1000) * -1,
+            'description' => 'Списание средств за переоформление карты'
+        ]);
+        $client->update([
+            'balance' => $client->balance - __hardcoded(1000),
+            'cached_pass' => $code
+        ]);
+        return $this->respondSuccess([], 'Карта успешно переоформлена!');
     }
 }

@@ -93,6 +93,10 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property-read bool $is_birthday
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Sale[] $lastPrograms
  * @property-read int|null $last_programs_count
+ * @property string|null $cached_pass
+ * @property string|null $cached_trinket
+ * @method static Builder|Client whereCachedPass($value)
+ * @method static Builder|Client whereCachedTrinket($value)
  */
 class Client extends Model implements HasMedia
 {

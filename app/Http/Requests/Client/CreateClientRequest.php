@@ -40,6 +40,7 @@ class CreateClientRequest extends FormRequest
             'photo' => 'sometimes|file',
             'user_id' => 'required',
             'club_id' => 'required',
+            'cached_pass' => 'sometimes',
         ];
     }
 
@@ -48,6 +49,7 @@ class CreateClientRequest extends FormRequest
             'user_id' => auth()->id(),
             'birth_date' => Carbon::parse($this->birth_date)->format('y-m-d'),
             'phone' => unmask_phone($this->phone),
+            'cached_pass' => $this->pass,
         ]);
     }
 }
