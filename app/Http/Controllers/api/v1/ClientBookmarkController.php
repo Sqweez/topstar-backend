@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Client\ClientBookmarkResource;
 use App\Models\Client;
 use App\Models\ClientBookmark;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
 
 class ClientBookmarkController extends ApiController
@@ -14,14 +16,16 @@ class ClientBookmarkController extends ApiController
     /**
      * Display a listing of the resource.
      *
-     * @return Collection
+     * @return AnonymousResourceCollection
      */
-    public function index(): Collection {
-        return ClientBookmark::query()
+    public function index(): AnonymousResourceCollection {
+        $clients =  ClientBookmark::query()
             ->where('user_id', auth()->id())
             ->with('client')
-            ->get()
-            ->pluck('client');
+            ->with('client.avatar')
+            ->get();
+
+        return ClientBookmarkResource::collection($clients);
     }
 
     public function deleteBookmark($id): JsonResponse {
@@ -35,9 +39,9 @@ class ClientBookmarkController extends ApiController
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Collection
+     * @return AnonymousResourceCollection
      */
-    public function store(Request $request): Collection {
+    public function store(Request $request): AnonymousResourceCollection {
         ClientBookmark::query()
             ->updateOrCreate([
                 'client_id' => $request->get('client_id'),

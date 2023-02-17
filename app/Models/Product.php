@@ -90,10 +90,13 @@ class Product extends Model
                'club_id' => $store_id,
                'name' => $qnts->first()['club']['name']
            ];
-        });
+        })->values();
 
-        return $quantitiesByClub
-            ->mergeRecursive($totalQuantity);
+        if (auth()->user()->is_boss) {
+            $quantitiesByClub = $quantitiesByClub->mergeRecursive($totalQuantity);
+        }
+
+        return $quantitiesByClub;
     }
 
     public function getFullnameAttribute(): string {

@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * App\Models\Client
@@ -41,7 +43,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @method static \Illuminate\Database\Eloquent\Builder|Client whereUserId($value)
  * @mixin \Eloquent
  * @property-read string|null $birth_date_formatted
- * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection|\Spatie\MediaLibrary\MediaCollections\Models\Media[] $media
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection|Media[] $media
  * @property-read int|null $media_count
  * @property-read \App\Models\Pass|null $pass
  * @method static \Illuminate\Database\Eloquent\Builder|Client pass($pass)
@@ -120,12 +122,16 @@ class Client extends Model implements HasMedia
         });
     }
 
+    public function avatar() {
+        return $this->media()->where('collection_name', self::MEDIA_AVATAR);
+    }
+
     public function pass(): MorphOne {
         return $this->morphOne(Pass::class, 'passable');
     }
 
     public function registrar(): BelongsTo {
-        return $this->belongsTo(User::class, 'user_id')->withDefault([
+        return $this->belongsTo(User::class, 'user_id')->select(['id', 'name'])->withDefault([
             'id' => null,
             'name' => 'Система'
         ]);
@@ -154,7 +160,7 @@ class Client extends Model implements HasMedia
 
     public function programs(): HasMany {
         return $this
-            ->sales()
+            ->hasMany(Sale::class)
             ->whereHasMorph('salable', [ServiceSale::class], function ($query) {
                 return $query->whereHas('service', function ($query) {
                     return $query->whereIn('service_type_id', [Service::TYPE_PROGRAM, Service::TYPE_UNLIMITED]);
@@ -164,7 +170,13 @@ class Client extends Model implements HasMedia
     }
 
     public function lastPrograms(): HasMany {
-        return $this->programs()->limit(10);
+        return $this->programs()
+            ->limit(10)
+            ->with([
+                'salable.service', 'salable.restores',
+                'salable.visits', 'club', 'salable.penalties',
+                'salable.visits.trainer', 'salable.active_session'//'salable.sale.client.active_session'
+            ]);
     }
 
     public function solarium(): HasMany {
@@ -175,6 +187,22 @@ class Client extends Model implements HasMedia
                     return $query->whereIn('service_type_id', [Service::TYPE_SOLARIUM]);
                 });
             })
+            ->latest();
+    }
+
+    public function activeSolariumMinutes() {
+        return $this
+            ->sales()
+            ->whereHasMorph('salable', [ServiceSale::class], function ($query) {
+                return $query->whereHas('service', function ($query) {
+                    return $query->whereIn('service_type_id', [Service::TYPE_SOLARIUM]);
+                })->where('minutes_remaining', '>', 0);
+            })
+            ->with(['salable' => function ($query) {
+                return $query->whereHas('service', function ($query) {
+                    return $query->whereIn('service_type_id', [Service::TYPE_SOLARIUM]);
+                })->where('minutes_remaining', '>', 0);
+            }])
             ->latest();
     }
 
@@ -199,7 +227,7 @@ class Client extends Model implements HasMedia
     }
 
     public function getIsInClubAttribute(): bool {
-        return !!$this->active_session;
+        return !!$this->cached_trinket;
     }
 
     public function getAgeAttribute() {
@@ -238,7 +266,7 @@ class Client extends Model implements HasMedia
     }
 
     public function getHasUnlimitedDiscountAttribute(): bool {
-        return $this->programs
+        return $this->lastPrograms
             ->where('salable.service.service_type_id', 1)
             ->filter(function ($sale) {
                 return $sale['salable']['can_be_used'] === true &&

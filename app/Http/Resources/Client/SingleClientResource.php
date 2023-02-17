@@ -39,9 +39,7 @@ class SingleClientResource extends JsonResource
             'birth_date' => $this->birth_date,
             'is_birthday_today' => $this->is_birthday,
             'description' => $this->description,
-            'sales' => $this->sales,
             'programs' => ClientPurchasedServices::collection($this->lastPrograms),
-            'solarium' => ClientPurchasedSolarium::collection($this->solarium),
             'trinket' => $this->trinket->code ?? null,
             'cabinet_number' => $this->trinket->cabinet_number ?? null,
             'active_session' => $this->active_session,
@@ -49,11 +47,11 @@ class SingleClientResource extends JsonResource
             'trinket_can_given' => $this->trinket_can_given,
             'session_can_be_finished' => $this->session_can_be_finished,
             'has_unlimited_discount' => $this->has_unlimited_discount,
-            'total_solarium' => $this->solarium->sum('salable.remaining_minutes'),
-            'in_bookmark' => !!ClientBookmark::query()
+            'total_solarium' => $this->activeSolariumMinutes->sum('salable.remaining_minutes'),
+            'in_bookmark' => ClientBookmark::query()
                 ->where('client_id', $this->id)
                 ->where('user_id', auth()->id())
-                ->first()
+                ->exists()
         ];
     }
 }

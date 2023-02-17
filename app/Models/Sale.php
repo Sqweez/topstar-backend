@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
@@ -70,7 +71,7 @@ class Sale extends Model
     }
 
     public function club(): BelongsTo {
-        return $this->belongsTo(Club::class);
+        return $this->belongsTo(Club::class)->select(['id', 'name']);
     }
 
     public function scopeBarSales($query) {

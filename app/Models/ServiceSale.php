@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
@@ -60,6 +61,8 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceSale whereSelfName($value)
  * @property string|null $activated_at
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceSale whereActivatedAt($value)
+ * @property int|null $client_id
+ * @method static \Illuminate\Database\Eloquent\Builder|ServiceSale whereClientId($value)
  */
 class ServiceSale extends Model
 {
@@ -73,12 +76,19 @@ class ServiceSale extends Model
         return $this->belongsTo(Service::class);
     }
 
+    public function active_session(): HasOne {
+        return $this->hasOne(SessionService::class,'service_sale_id')
+            ->whereHas('session', function ($q) {
+                return $q->where('finished_at', null);
+            });
+    }
+
     public function sale(): MorphOne {
         return $this->morphOne(Sale::class, 'salable');
     }
 
     public function visits(): HasMany {
-        return $this->hasMany(SessionService::class);
+        return $this->hasMany(SessionService::class)->latest();
     }
 
     public function penalties(): HasMany {
@@ -96,7 +106,9 @@ class ServiceSale extends Model
     }
 
     public function getLastTrainerAttribute() {
-        return $this->visits()->latest()->first()->trainer ?? ['id' => null, 'name' => 'Не установлен'];
+        return $this->visits
+            ->first()
+            ->trainer ?? ['id' => null, 'name' => 'Не установлен'];
     }
 
     public function getActiveUntilFormattedAttribute(): ?string {
@@ -163,11 +175,7 @@ class ServiceSale extends Model
     }
 
     public function getAlreadyWrittenOffAttribute(): bool {
-        $activeSession = $this->sale->client->active_session;
-        if (!$activeSession) {
-            return false;
-        }
-        return !!$this->visits->where('session_id', $activeSession->id)->count();
+        return !!$this->active_session;
     }
 
     public function getHasUnconfirmedRestoreRequestsAttribute(): bool {

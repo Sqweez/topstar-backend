@@ -10,6 +10,7 @@ use App\Http\Resources\Product\ProductsListResource;
 use App\Models\Club;
 use App\Models\Product;
 use App\Models\ProductBatch;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -18,6 +19,28 @@ class ProductController extends ApiController
 {
     public function index(Request $request): AnonymousResourceCollection {
         $products = Product::query()
+            ->when($request->has('store_id'), function ($query) {
+                return $query->whereHas('batches', function ($q) {
+                    return $q->where('store_id', \request('store_id'));
+                });
+            })
+            ->with(['batches.club', 'category'])
+            ->get();
+
+        return ProductsListResource::collection($products);
+    }
+
+    public function search(Request $request): AnonymousResourceCollection {
+        $search = $request->get('search');
+        if (!$search) {
+            return ProductsListResource::collection([]);
+        }
+        $products = Product::query()
+            ->where(function (Builder $query) use ($search) {
+                $query->where('name', 'like', prepare_search_string($search))
+                    ->orWhere('barcode', 'like', prepare_search_string($search));
+            })
+            ->where('product_type_id', $request->get('type', 1))
             ->when($request->has('store_id'), function ($query) {
                 return $query->whereHas('batches', function ($q) {
                     return $q->where('store_id', \request('store_id'));

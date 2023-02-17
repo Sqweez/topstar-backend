@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
     'prefix' => 'v1',
-    'middleware' => 'auth:api'
+    //'middleware' => 'auth:api'
 ], function () {
     Route::apiResource('clubs', ClubController::class)->only(['index']);
     Route::apiResource('roles', RoleController::class)->only(['index']);
@@ -87,6 +87,7 @@ Route::group([
     Route::post('products/{product}/batch', [ProductController::class, 'createProductBatch']);
     Route::get('products/{product}/batch', [ProductController::class, 'getProductBatchesInformation']);
     Route::apiResource('products/categories', ProductCategoryController::class);
+    Route::get('products/search', [ProductController::class, 'search']);
     Route::apiResource('products', ProductController::class);
     // Закладка клиентов
     Route::delete('bookmarks/{id}', [ClientBookmarkController::class, 'deleteBookmark']);

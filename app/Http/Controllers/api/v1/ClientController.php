@@ -45,7 +45,7 @@ class ClientController extends ApiController {
                     ->orWhere('cached_pass', $search)
                     ->orWhere('cached_trinket', $search);
             })
-            ->with(['club', 'pass', 'active_session.trinket'])
+            ->with(['club', /*'pass', 'active_session.trinket'*/])
             ->get();
         return ClientListResource::collection($clients);
     }
@@ -70,7 +70,7 @@ class ClientController extends ApiController {
      * @param Client $client
      * @return SingleClientResource
      */
-    public function show(Client $client): SingleClientResource {
+    public function show(Client $client) {
         $client = RetrieveSingleClient::retrieve($client);
         return SingleClientResource::make($client);
     }
