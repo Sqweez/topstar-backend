@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
     'prefix' => 'v1',
-    //'middleware' => 'auth:api'
+    'middleware' => 'auth:api'
 ], function () {
     Route::apiResource('clubs', ClubController::class)->only(['index']);
     Route::apiResource('roles', RoleController::class)->only(['index']);
