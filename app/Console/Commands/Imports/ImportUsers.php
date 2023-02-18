@@ -47,6 +47,7 @@ class ImportUsers extends Command
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('users')->truncate();
         \DB::table('role_user')->truncate();
+        \DB::table('passes')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         collect($users)->each(function ($user) {
             $this->line($user->name);
@@ -66,7 +67,7 @@ class ImportUsers extends Command
                 'club_id' => str_replace('club', '', $user->clubid),
                 'phone' => '+7' . unmask_phone($user->phone),
                 // 123456
-                'password' => '$2y$10$RIQoz7GjS5sMy4VuXSay.OpeCnl5U6E8BYtl9Dcsou9C0G8W.HqXa',
+                'password' => null,
                 'is_active' => $user->status == 0
             ]);
 
@@ -97,12 +98,12 @@ class ImportUsers extends Command
 
             $_user->roles()->sync($roles);
 
-            /*if ($user->photo) {
+            if ($user->photo && $user->status == 0) {
                 $this->line($user->photo);
                 $_user
                     ->addMediaFromUrl(sprintf("http://top-star.kz/photos/%s", $user->photo))
                     ->toMediaCollection(\App\Models\User::MEDIA_AVATAR);;
-            }*/
+            }
 
         });
 

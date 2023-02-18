@@ -77,6 +77,7 @@ class ClientPurchasedServiceHistoryResource extends JsonResource
             'restores' => $restores,
             'price' => $this->transaction->amount * -1,
             'user' => $this->user,
+            'sid' => $this->id,
         ];
     }
 }

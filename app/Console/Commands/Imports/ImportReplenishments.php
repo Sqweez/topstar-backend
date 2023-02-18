@@ -40,13 +40,14 @@ class ImportReplenishments extends Command
     public function handle()
     {
          \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-       /* \DB::table('client_replenishments')->truncate();
-        \DB::table('with_drawals')->truncate();*/
+         \DB::table('client_replenishments')->truncate();
+        \DB::table('with_drawals')->truncate();
         $hasData = true;
         $page = 1;
         while ($hasData) {
             $items = $this->getData($page);
             $hasData = count($items) > 0;
+            $this->line('Импортировано ' . $page * 50000);
             collect($items)->each(function ($item) {
                 $this->line($item->com);
                 $club = str_replace('club', '', $item->clubid);
@@ -65,7 +66,7 @@ class ImportReplenishments extends Command
                             'payment_type' => $item->nal == 1 ? 1 : 2,
                         ]);
 
-                    $r->transaction()->create([
+                    /*$r->transaction()->create([
                         'client_id' => $item->idclienta,
                         'user_id' => $item->idprodazhnika,
                         'amount' => $item->summa,
@@ -73,7 +74,7 @@ class ImportReplenishments extends Command
                         'updated_at' => $item->data,
                         'club_id' => $clubId,
                         'description' => 'Пополнение средств'
-                    ]);
+                    ]);*/
                 } else {
                     WithDrawal::create([
                         'id' => $item->id,
@@ -87,7 +88,6 @@ class ImportReplenishments extends Command
                     ]);
                 }
             });
-            $this->line('Импортировано ' . $page * 10000);
             $page ++;
         }
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');

@@ -106,7 +106,7 @@ class Client extends Model implements HasMedia
 
     const MEDIA_AVATAR = 'client_avatar';
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     protected $casts = [
         'created_at' => 'datetime',
@@ -166,7 +166,7 @@ class Client extends Model implements HasMedia
                     return $query->whereIn('service_type_id', [Service::TYPE_PROGRAM, Service::TYPE_UNLIMITED]);
                 });
             })
-            ->latest();
+            ->latest('created_at');
     }
 
     public function lastPrograms(): HasMany {

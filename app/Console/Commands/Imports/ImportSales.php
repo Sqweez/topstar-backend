@@ -97,7 +97,7 @@ class ImportSales extends Command
                 $_sale = $serviceSale->sale()->create($this->getSaleObject($sale));
                 $_sale->transaction()->create($this->getTransactionObject($sale));
             });
-            $this->line('Импортировано ' . $page * 1000);
+            $this->line('Импортировано ' . $page * 50000);
             $page++;
         }
         ServiceSale::whereServiceId(1174)->update(['entries_count' => 1]);

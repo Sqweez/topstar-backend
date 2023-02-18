@@ -81,7 +81,7 @@ class ImportClients extends Command
                 $_client->pass()->save($pass);
             }
 
-            /*if ($client->photo) {
+            if ($client->photo && !\Str::contains($client->photo, 'nophoto')) {
                 $photoExtension = explode('.', $client->photo)[1];
                 if (in_array($photoExtension, ['jpeg', 'jpg', 'png'])) {
                     $this->line($client->photo);
@@ -93,7 +93,7 @@ class ImportClients extends Command
                         \Log::error($exception->getMessage());
                     }
                 }
-            }*/
+            }
         });
     }
 

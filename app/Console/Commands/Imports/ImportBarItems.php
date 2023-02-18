@@ -39,7 +39,7 @@ class ImportBarItems extends Command
      */
     public function handle()
     {
-        \DB::table('products')->where('product_type_id', 2)->truncate();
+        \DB::table('products')->where('product_type_id', 2)->delete();
         $items = $this->getItems();
         collect($items)->each(function ($item) {
             $this->line($item->name);
@@ -54,7 +54,7 @@ class ImportBarItems extends Command
                     'product_group_id' => 10000 + $item->id,
                 ]);
 
-            if ($item->kolvo != 0) {
+            if ($item->kolvo > 0) {
                 ProductBatch::query()
                     ->create([
                         'initial_quantity' => $item->kolvo,
