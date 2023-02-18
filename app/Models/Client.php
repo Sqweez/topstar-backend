@@ -175,7 +175,7 @@ class Client extends Model implements HasMedia
 
     public function lastPrograms(): HasMany {
         return $this->programs()
-            ->limit(10)
+            //->limit(10)
             ->with([
                 'salable.service', 'salable.restores',
                 'salable.visits', 'club', 'salable.penalties',
@@ -188,7 +188,7 @@ class Client extends Model implements HasMedia
             ->sales()
             ->whereHasMorph('salable', [ServiceSale::class], function ($query) {
                 return $query->whereHas('service', function ($query) {
-                    return $query->whereIn('service_type_id', [Service::TYPE_SOLARIUM])->withTrashed();
+                    return $query->whereIn('service_type_id', [Service::TYPE_SOLARIUM]);
                 });
             })
             ->latest();
@@ -199,12 +199,12 @@ class Client extends Model implements HasMedia
             ->sales()
             ->whereHasMorph('salable', [ServiceSale::class], function ($query) {
                 return $query->whereHas('service', function ($query) {
-                    return $query->whereIn('service_type_id', [Service::TYPE_SOLARIUM])->withTrashed();
+                    return $query->whereIn('service_type_id', [Service::TYPE_SOLARIUM]);
                 })->where('minutes_remaining', '>', 0);
             })
             ->with(['salable' => function ($query) {
                 return $query->whereHas('service', function ($query) {
-                    return $query->whereIn('service_type_id', [Service::TYPE_SOLARIUM])->withTrashed();
+                    return $query->whereIn('service_type_id', [Service::TYPE_SOLARIUM]);
                 })->where('minutes_remaining', '>', 0);
             }])
             ->latest();
