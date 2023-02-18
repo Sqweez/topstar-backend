@@ -173,7 +173,7 @@ class Client extends Model implements HasMedia
 
     public function lastPrograms(): HasMany {
         return $this->programs()
-            //->limit(10)
+            ->limit(10)
             ->with([
                 'salable.service', 'salable.restores',
                 'salable.visits', 'club', 'salable.penalties',
