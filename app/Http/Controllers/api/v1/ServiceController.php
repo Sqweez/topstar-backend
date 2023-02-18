@@ -94,7 +94,8 @@ class ServiceController extends ApiController
      */
     public function destroy($id)
     {
-        Service::whereKey($id)->delete();
+        //Service::whereKey($id)->delete();
+        Service::whereKey($id)->update(['is_active' => false]);
         return $this->respondSuccess([], 'Услуга успешно удалена!');
     }
 
