@@ -164,10 +164,8 @@ class Client extends Model implements HasMedia
             ->whereHasMorph('salable', [ServiceSale::class], function ($query) {
                 return $query->whereHas('service', function ($query) {
                     return $query
-                        ->withTrashed()
                         ->whereIn('service_type_id',
-                            [Service::TYPE_PROGRAM, Service::TYPE_UNLIMITED]
-                        );
+                            [Service::TYPE_PROGRAM, Service::TYPE_UNLIMITED]);
                 });
             })
             ->latest('created_at');
