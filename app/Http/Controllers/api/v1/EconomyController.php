@@ -14,6 +14,7 @@ use App\Models\ClientReplenishment;
 use App\Models\ProductSale;
 use App\Models\Sale;
 use App\Models\Service;
+use App\Models\Session;
 use App\Models\SessionService;
 use App\Models\Trinket;
 use App\Models\User;
@@ -113,7 +114,7 @@ class EconomyController extends ApiController
     public function getMySolarium(): AnonymousResourceCollection {
         /* @var User $user */
         $user = auth()->user();
-        $solariumHistory = SessionService::query()
+        /*$solariumHistory = SessionService::query()
             ->whereHas('service_sale', function ($query) {
                 return $query->whereHas('service', function ($subQuery) {
                     return $subQuery->whereIn('service_type_id', [Service::TYPE_SOLARIUM]);
@@ -126,6 +127,21 @@ class EconomyController extends ApiController
                 });
             })
             ->with(['user', 'session.client'])
+            ->latest()
+            ->get();*/
+
+        $solariumHistory = Session::query()
+            ->whereHas('session_service', function ($query) {
+                return $query->whereHas('service_sale', function ($query) {
+                    return $query->whereHas('service', function ($subQuery) {
+                        return $subQuery->whereIn('service_type_id', [Service::TYPE_SOLARIUM]);
+                    });
+                })->today();
+            })
+            ->when(!$user->is_boss, function ($query) use ($user) {
+                return $query->where('club_id', $user->club_id);
+            })
+            ->with(['session_service.user', 'client'])
             ->latest()
             ->get();
 
