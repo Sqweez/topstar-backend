@@ -16,6 +16,7 @@ use App\Models\Sale;
 use App\Models\Service;
 use App\Models\SessionService;
 use App\Models\Trinket;
+use App\Models\User;
 use App\Models\WithDrawal;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -110,6 +111,8 @@ class EconomyController extends ApiController
     }
 
     public function getMySolarium(): AnonymousResourceCollection {
+        /* @var User $user */
+        $user = auth()->user();
         $solariumHistory = SessionService::query()
             ->whereHas('service_sale', function ($query) {
                 return $query->whereHas('service', function ($subQuery) {
@@ -117,6 +120,11 @@ class EconomyController extends ApiController
                 });
             })
             ->today()
+            ->when(!$user->is_boss, function ($query) use ($user) {
+                return $query->whereHas('session', function ($subQuery) use ($user) {
+                    return $subQuery->where('club_id', $user->club_id);
+                });
+            })
             ->with(['user', 'session.client'])
             ->latest()
             ->get();
