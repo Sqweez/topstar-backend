@@ -130,7 +130,7 @@ class EconomyController extends ApiController
             ->get()
             ->groupBy('session_id')
             ->map(function ($sessions, $key) {
-                return array_merge_recursive($sessions[0], ['minutes' => collect($sessions)->reduce(function ($a, $c) {
+                return array_merge_recursive($sessions->first()->toArray(), ['minutes' => collect($sessions)->reduce(function ($a, $c) {
                     return $a + $c['minutes'];
                 }, 0)]);
             })
