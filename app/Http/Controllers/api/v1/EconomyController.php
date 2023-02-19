@@ -131,7 +131,7 @@ class EconomyController extends ApiController
             ->get();*/
 
         $solariumHistory = Session::query()
-            ->whereHas('session_service', function ($query) {
+            ->whereHas('session_services', function ($query) {
                 return $query->whereHas('service_sale', function ($query) {
                     return $query->whereHas('service', function ($subQuery) {
                         return $subQuery->whereIn('service_type_id', [Service::TYPE_SOLARIUM]);
@@ -141,7 +141,14 @@ class EconomyController extends ApiController
             ->when(!$user->is_boss, function ($query) use ($user) {
                 return $query->where('club_id', $user->club_id);
             })
-            ->with(['session_service.user', 'client'])
+            ->with(['session_services' => function ($query) {
+                return $query->whereHas('service_sale', function ($query) {
+                    return $query->whereHas('service', function ($subQuery) {
+                        return $subQuery->whereIn('service_type_id', [Service::TYPE_SOLARIUM]);
+                    });
+                })->today();
+            }])
+            ->with(['session_services.user', 'client'])
             ->latest()
             ->get();
 

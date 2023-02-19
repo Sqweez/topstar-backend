@@ -59,6 +59,10 @@ class Session extends Model
         return $this->hasOne(SessionService::class, 'session_id');
     }
 
+    public function session_services(): \Illuminate\Database\Eloquent\Relations\HasMany {
+        return $this->hasMany(SessionService::class, 'session_id');
+    }
+
     public function start_user(): BelongsTo {
         return $this->belongsTo(User::class, 'start_user_id');
     }

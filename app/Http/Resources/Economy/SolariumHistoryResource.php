@@ -21,13 +21,13 @@ class SolariumHistoryResource extends JsonResource
         return [
             'id' => $this->id,
             'client' => $this->client,
-            'user' => $this->session_service->first()->user,
+            'user' => $this->session_services->first()->user,
             'club' => $this->club,
-            'minutes' => $this->session_service->reduce(function ($a, $c) {
+            'minutes' => $this->session_services->reduce(function ($a, $c) {
                 return $a + $c['minutes'];
             }, 0),
-            'date' => format_datetime($this->session_service->first()->created_at),
-            'created_at' => $this->session_service->first()->created_at,
+            'date' => format_datetime($this->session_services->first()->created_at),
+            'created_at' => $this->session_services->first()->created_at,
         ];
     }
 }
