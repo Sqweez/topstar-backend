@@ -127,7 +127,14 @@ class EconomyController extends ApiController
             })
             ->with(['user', 'session.client'])
             ->latest()
-            ->get();
+            ->get()
+            ->groupBy('session_id')
+            ->map(function ($sessions, $key) {
+                return array_merge_recursive($sessions[0], ['minutes' => collect($sessions)->reduce(function ($a, $c) {
+                    return $a + $c['minutes'];
+                }, 0)]);
+            })
+            ->values();
 
         return SolariumHistoryResource::collection($solariumHistory);
     }
