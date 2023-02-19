@@ -19,13 +19,13 @@ class SolariumHistoryResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this['id'],
-            'client' => $this['session']['client'],
-            'user' => $this['user'],
-            'club' => $this['session']['club'],
-            'minutes' => $this['minutes'],
-            'date' => format_datetime($this['created_at']),
-            'created_at' => $this['created_at'],
+            'id' => $this->id,
+            'client' => $this->session->client,
+            'user' => $this->user,
+            'club' => $this->session->club,
+            'minutes' => $this->minutes,
+            'date' => format_datetime($this->created_at),
+            'created_at' => $this->created_at,
         ];
     }
 }
