@@ -82,8 +82,8 @@ class Session extends Model
     }
 
     public function scopeToday($q) {
-        $q->where('created_at', '>=', now()->startOfDay())
-            ->where('created_at', '<=', now()->endOfDay());
+        $q->where('created_at', '>=', today()->startOfDay())
+            ->where('created_at', '<=', today()->endOfDay());
     }
 
     public function getTimeDurationAttribute(): string {
