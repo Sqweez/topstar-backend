@@ -11,7 +11,7 @@ class ActivatePurchasedServiceAction {
 
     public function handle(Request $request, ServiceSale $serviceSale): ?Sale {
         $service = $serviceSale->service;
-        $activeUntil = now()->addDays($service->validity_days - 1);
+        $activeUntil = now()->addDays($service->validity_days);
         // Если солярий, то прибавляем 100 лет
         if ($service->service_type_id === Service::TYPE_SOLARIUM) {
             $activeUntil = now()->addYears(100);

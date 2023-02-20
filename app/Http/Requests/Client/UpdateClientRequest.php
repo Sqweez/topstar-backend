@@ -35,8 +35,9 @@ class UpdateClientRequest extends FormRequest
             'cached_pass' => 'sometimes',
             'phone' => [
                 'required',
-                Rule::unique('clients', 'phone')
-                    ->whereNot('id', $this->id)
+                // @TODO 2023-02-20T21:49:15 временное решение для детей
+               /* Rule::unique('clients', 'phone')
+                    ->whereNot('id', $this->id)*/
             ]
         ];
     }

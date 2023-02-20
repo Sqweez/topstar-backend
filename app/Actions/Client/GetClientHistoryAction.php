@@ -101,7 +101,7 @@ class GetClientHistoryAction {
             ->whereHasMorph('salable', [ServiceSale::class], function ($query) {
                 return $query->whereHas('service', function ($query) {
                     return $query->whereIn('service_type_id', [Service::TYPE_SOLARIUM]);
-                });
+                })->where('minutes_remaining', '>', 0);
             })
             ->with(['client', 'user', 'transaction', 'salable.service', 'club'])
             ->latest()

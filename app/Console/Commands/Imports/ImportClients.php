@@ -73,7 +73,8 @@ class ImportClients extends Command
                 'user_id' => $client->who == 0 ? null : $client->who,
                 'created_at' => $created_at,
                 'gender' => intval($client->pol) === 1 ? 'M' : 'F',
-                'cached_pass' => $client->cardid
+                'cached_pass' => $client->cardid,
+                'cached_solarium_total' => $client->solar
             ]);
 
             if ($client->cardid) {
@@ -81,7 +82,7 @@ class ImportClients extends Command
                 $_client->pass()->save($pass);
             }
 
-            if ($client->photo && !\Str::contains($client->photo, 'nophoto')) {
+            /*if ($client->photo && !\Str::contains($client->photo, 'nophoto')) {
                 $photoExtension = explode('.', $client->photo)[1];
                 if (in_array($photoExtension, ['jpeg', 'jpg', 'png'])) {
                     $this->line($client->photo);
@@ -93,7 +94,7 @@ class ImportClients extends Command
                         \Log::error($exception->getMessage());
                     }
                 }
-            }
+            }*/
         });
     }
 

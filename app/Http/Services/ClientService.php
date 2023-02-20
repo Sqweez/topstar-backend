@@ -68,25 +68,28 @@ class ClientService {
         $minutes = $payload['minutes'];
         $activeSolarium = $client->solarium->sortBy('id');
         $activeSolarium->load('salable.visits');
-
         $session = $this->open($client, $payload);
 
-        $activeSolarium = $activeSolarium->filter(function ($solarium) {
-            return $solarium->salable->remaining_minutes > 0;
-        });
+        $client->update(['cached_solarium_total' => $client->cached_solarium_total - $minutes]);
 
-        foreach ($activeSolarium as $item) {
+        /*$activeSolarium = $activeSolarium->filter(function ($solarium) {
+            return $solarium->salable->remaining_minutes > 0;
+        });*/
+
+        SessionService::create([
+            'user_id' => $payload['user_id'],
+            'service_sale_id' => $activeSolarium->first()->id,
+            'session_id' => optional($session)->id,
+            'minutes' => $minutes
+        ]);
+
+        /*foreach ($activeSolarium as $item) {
             if ($minutes > 0) {
                 $needleMinutes = min($minutes, $item->salable->remaining_minutes);
                 $minutes -= $needleMinutes;
-                SessionService::create([
-                    'user_id' => $payload['user_id'],
-                    'service_sale_id' => $item->salable_id,
-                    'session_id' => optional($session)->id,
-                    'minutes' => $needleMinutes
-                ]);
+
             }
-        }
+        }*/
 
         return Client::find($client->id);
     }

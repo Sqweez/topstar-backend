@@ -132,10 +132,10 @@ class ImportSales extends Command
         }
 
         try {
-            $activeUntil = $sale->dataend !== '0000-00-00' ? Carbon::parse($sale->dataend): now()->addYear();
+            $activeUntil = $sale->dataend !== '0000-00-00' ? Carbon::parse($sale->dataend): null;
         } catch (InvalidFormatException $exception) {
             \Log::error($exception->getMessage());
-            $activeUntil = now()->addYear();
+            $activeUntil = null;
         }
 
         $serviceSaleObject = [

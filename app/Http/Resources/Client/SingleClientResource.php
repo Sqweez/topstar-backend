@@ -47,7 +47,7 @@ class SingleClientResource extends JsonResource
             'trinket_can_given' => $this->trinket_can_given,
             'session_can_be_finished' => $this->session_can_be_finished,
             'has_unlimited_discount' => $this->has_unlimited_discount,
-            'total_solarium' => $this->activeSolariumMinutes->sum('salable.remaining_minutes'),
+            'total_solarium' => $this->cached_solarium_total, //$this->activeSolariumMinutes->sum('salable.remaining_minutes'),
             'in_bookmark' => ClientBookmark::query()
                 ->where('client_id', $this->id)
                 ->where('user_id', auth()->id())

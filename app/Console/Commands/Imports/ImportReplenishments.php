@@ -40,8 +40,8 @@ class ImportReplenishments extends Command
     public function handle()
     {
          \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-         \DB::table('client_replenishments')->truncate();
-        \DB::table('with_drawals')->truncate();
+       /*  \DB::table('client_replenishments')->truncate();
+        \DB::table('with_drawals')->truncate();*/
         $hasData = true;
         $page = 1;
         while ($hasData) {

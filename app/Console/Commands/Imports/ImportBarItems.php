@@ -39,7 +39,7 @@ class ImportBarItems extends Command
      */
     public function handle()
     {
-        \DB::table('products')->where('product_type_id', 2)->delete();
+/*        \DB::table('products')->where('product_type_id', 2)->delete();*/
         $items = $this->getItems();
         collect($items)->each(function ($item) {
             $this->line($item->name);

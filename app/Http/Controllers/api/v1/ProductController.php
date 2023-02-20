@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\CreateProductBatchRequest;
 use App\Http\Requests\Product\CreateProductRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\Product\ProductBatchesInformationResource;
 use App\Http\Resources\Product\ProductsListResource;
 use App\Models\Club;
@@ -67,8 +68,10 @@ class ProductController extends ApiController
         ], 'Товар успешно создан!');
     }
 
-    public function update() {
-
+    public function update(UpdateProductRequest $request, Product $product): ProductsListResource {
+        $product->update($request->validated());
+        $product->refresh();
+        return new ProductsListResource($product);
     }
 
     public function destroy($id) {
