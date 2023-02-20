@@ -106,7 +106,7 @@ class Client extends Model implements HasMedia
 
     const MEDIA_AVATAR = 'client_avatar';
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     protected $casts = [
         'created_at' => 'datetime',

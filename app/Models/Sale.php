@@ -46,7 +46,7 @@ class Sale extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     const TYPE_SERVICE = 'service';
     const TYPE_PRODUCT = 'product';

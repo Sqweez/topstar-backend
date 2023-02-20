@@ -51,7 +51,14 @@ class Product extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
+
+    protected static function boot() {
+        parent::boot();
+        static::addGlobalScope('order', function ($builder) {
+            $builder->orderBy('name', 'asc');
+        });
+    }
 
     public function category(): BelongsTo {
         return $this->belongsTo(ProductCategory::class, 'product_category_id');

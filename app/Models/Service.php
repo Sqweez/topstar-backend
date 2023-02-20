@@ -57,7 +57,7 @@ class Service extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     protected static function boot() {
         parent::boot();

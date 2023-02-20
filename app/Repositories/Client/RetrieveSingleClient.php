@@ -11,7 +11,7 @@ class RetrieveSingleClient {
         $client->load('registrar');
         $client->load('club');
         $client->load('lastPrograms');
-        $client->load('activeSolariumMinutes.salable.visits:id,service_sale_id,minutes');
+      //  $client->load('activeSolariumMinutes.salable.visits:id,service_sale_id,minutes');
         $client->load('active_session');
         return $client;
     }
