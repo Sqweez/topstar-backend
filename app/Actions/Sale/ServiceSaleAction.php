@@ -28,7 +28,7 @@ class ServiceSaleAction {
                 $client->increment('balance', $transaction->amount);
             }
             if ($service->service_type_id === Service::TYPE_SOLARIUM) {
-                $client->update(['cached_solarium_total' => $client->cached_solarium_total + $payload['count']]);
+                $client->update(['cached_solarium_total' => $client->cached_solarium_total + $service->validity_minutes * $payload['count']]);
                 $client->refresh();
             }
             return $client;
