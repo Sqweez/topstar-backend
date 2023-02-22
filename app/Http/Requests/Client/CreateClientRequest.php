@@ -31,7 +31,7 @@ class CreateClientRequest extends FormRequest
             'phone' => [
                 'required',
                 'string',
-                Rule::unique('clients')
+                //Rule::unique('clients')
             ],
             'birth_date' => 'required|date|before:today|after:' . now()->subYears(100),
             'pass' => ['sometimes', new NotBusyPass],
@@ -47,7 +47,7 @@ class CreateClientRequest extends FormRequest
     protected function prepareForValidation() {
         $this->merge([
             'user_id' => auth()->id(),
-            'birth_date' => Carbon::parse($this->birth_date)->format('y-m-d'),
+            'birth_date' => Carbon::parse($this->birth_date)->format('Y-m-d'),
             'phone' => unmask_phone($this->phone),
             'cached_pass' => $this->pass,
         ]);
