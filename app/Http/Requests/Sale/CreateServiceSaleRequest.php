@@ -35,6 +35,7 @@ class CreateServiceSaleRequest extends FormRequest
             'is_prolongation' => 'required|boolean',
             'prolonged_id' => 'sometimes',
             'count' => 'required|integer',
+            'self_name' => 'string'
         ];
     }
 

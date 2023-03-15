@@ -33,7 +33,7 @@ class ProductSale extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     public function product(): BelongsTo {
         return $this->belongsTo(Product::class)->withTrashed();

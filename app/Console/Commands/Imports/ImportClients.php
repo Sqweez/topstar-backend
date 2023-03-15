@@ -41,7 +41,7 @@ class ImportClients extends Command
      */
     public function handle()
     {
-        \DB::table('clients')->truncate();
+        //\DB::table('clients')->truncate();
         $clients = $this->getClients();
         $hasClients = count($clients) > 0;
         collect($clients)->each(function ($client) {

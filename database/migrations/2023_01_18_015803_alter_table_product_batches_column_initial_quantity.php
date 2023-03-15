@@ -15,12 +15,7 @@ class AlterTableProductBatchesColumnInitialQuantity extends Migration
     {
         Schema::table('product_batches', function (Blueprint $table) {
             $table->unsignedInteger('initial_quantity')->after('quantity');
-            $table->foreignId('user_id')
-                ->nullable()
-                ->references('id')
-                ->on('users')
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
+            $table->unsignedInteger('user_id')->nullable();
         });
     }
 

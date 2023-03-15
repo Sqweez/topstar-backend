@@ -42,7 +42,7 @@ class ServiceSaleAction {
             'minutes_remaining' => ($service->validity_minutes && $service->validity_minutes > 0) ? $service->validity_minutes : null,
             'active_until' => null,
             'user_id' => $payload['user_id'],
-            'self_name' => $service->name,
+            'self_name' => $payload['self_name'],
         ];
     }
 

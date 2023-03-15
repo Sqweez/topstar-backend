@@ -78,7 +78,7 @@ class ClientService {
 
         SessionService::create([
             'user_id' => $payload['user_id'],
-            'service_sale_id' => $activeSolarium->first()->id,
+            'service_sale_id' => $activeSolarium->first()->salable_id,
             'session_id' => optional($session)->id,
             'minutes' => $minutes
         ]);

@@ -14,15 +14,9 @@ class CreateTableClubUser extends Migration
     public function up()
     {
         Schema::create('club_user', function (Blueprint $table) {
-            $table->foreignId('club_id')
-                ->constrained('clubs')
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate();
+            $table->unsignedInteger('club_id');
 
-            $table->foreignId('user_id')
-                ->constrained('users')
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate();
+            $table->unsignedInteger('user_id');
         });
     }
 
