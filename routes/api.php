@@ -42,6 +42,9 @@ Route::group([
     Route::post('services/activate/{service}', [ServiceController::class, 'activateService']);
     // Редактирование купленной услуги
     Route::patch('services/purchased/{service}', [ServiceController::class, 'updatePurchaseService']);
+    // Заморозка карты
+    Route::post('services/stop/{service}', [ServiceController::class, 'stopPurchasedService']);
+    Route::post('services/unstop/{service}', [ServiceController::class, 'unstopPurchasedService']);
     // Типы услуг
     Route::get('services/types', [ServiceController::class, 'getServiceTypes']);
     Route::apiResource('services', ServiceController::class);

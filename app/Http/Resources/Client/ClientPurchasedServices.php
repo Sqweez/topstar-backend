@@ -49,6 +49,8 @@ class ClientPurchasedServices extends JsonResource
             'days_remaining' => $service->days_remaining,
             'already_written_off' => $service->already_written_off,
             'last_trainer' => $service->last_trainer,
+            'is_stopped' => $service->is_stopped,
+            'active_stop' => $service->active_stop ? new ActiveStopProgramResource($service->active_stop) : null,
            # ,
            # 'last_trainer' => $service->last_trainer,
         ];

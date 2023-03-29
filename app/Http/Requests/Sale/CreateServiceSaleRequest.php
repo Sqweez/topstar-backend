@@ -45,6 +45,7 @@ class CreateServiceSaleRequest extends FormRequest
             'is_prolongation' => $this->is_prolongation ?: false,
             'prolonged_id' => $this->prolonged_id ?: null,
             'count' => $this->count ?: 1,
+            'self_name' => $this->self_name ?: ''
         ]);
     }
 }

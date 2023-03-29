@@ -177,7 +177,7 @@ class Client extends Model implements HasMedia
             ->with([
                 'salable.service', 'salable.restores',
                 'salable.visits', 'club', 'salable.penalties',
-                'salable.visits.trainer', 'salable.active_session'
+                'salable.visits.trainer', 'salable.active_session', 'salable.active_stop.user'
             ]);
     }
 

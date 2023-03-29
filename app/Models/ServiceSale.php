@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -41,20 +42,20 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property-read int|null $remaining_visits
  * @property-read int|null $visits_count
  * @property-read \App\Models\Sale|null $sale
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SessionService[] $visits
+ * @property-read Collection|\App\Models\SessionService[] $visits
  * @property-read bool $can_be_restored
  * @property-read bool $already_written_off
  * @property-read mixed $last_trainer
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ClientServicePenalty[] $penalties
+ * @property-read Collection|\App\Models\ClientServicePenalty[] $penalties
  * @property-read int|null $penalties_count
  * @property int $is_prolongation
  * @property-read int $remaining_minutes
  * @property-read int $solarium_expired_minutes
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceSale whereIsProlongation($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RestoredService[] $restores
+ * @property-read Collection|\App\Models\RestoredService[] $restores
  * @property-read int|null $restores_count
  * @property-read bool $has_unconfirmed_restore_requests
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RestoredService[] $acceptedRestores
+ * @property-read Collection|\App\Models\RestoredService[] $acceptedRestores
  * @property-read int|null $accepted_restores_count
  * @property-read string|null $days_remaining
  * @property string|null $self_name
@@ -81,6 +82,16 @@ class ServiceSale extends Model
             ->whereHas('session', function ($q) {
                 return $q->where('finished_at', null);
             });
+    }
+
+    public function stops(): HasMany {
+        return $this->hasMany(StopCard::class, 'service_sale_id');
+    }
+
+    public function active_stop(): HasOne {
+        return $this->hasOne(StopCard::class, 'service_sale_id')
+            ->where('is_active', true)
+            ->where('unstopped_at', null);
     }
 
     public function sale(): MorphOne {
@@ -163,7 +174,8 @@ class ServiceSale extends Model
     public function getCanBeUsedAttribute(): bool {
         return $this->getIsActivatedAttribute()
             && $this->getRemainingVisitsAttribute()
-            && !$this->getIsExpiredAttribute();
+            && !$this->getIsExpiredAttribute()
+            && !$this->getIsStoppedAttribute();
     }
 
     public function getCanBeRestoredAttribute(): bool {
@@ -171,7 +183,8 @@ class ServiceSale extends Model
             && $this->getIsActivatedAttribute()
             && $this->getRemainingVisitsAttribute() > 0
             && $this->service->restore_price > 0
-            && $this->service->is_active;
+            && $this->service->is_active
+            && !$this->getIsStoppedAttribute();
     }
 
     public function getAlreadyWrittenOffAttribute(): bool {
@@ -191,5 +204,9 @@ class ServiceSale extends Model
         }
         $diff = Carbon::parse($this->active_until)->diff(now());
         return $diff->days;
+    }
+
+    public function getIsStoppedAttribute(): bool {
+        return !!$this->active_stop;
     }
 }
