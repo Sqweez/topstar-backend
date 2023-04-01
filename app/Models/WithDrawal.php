@@ -37,7 +37,7 @@ class WithDrawal extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     public function user(): BelongsTo {
         return $this->belongsTo(User::class)->select(['id', 'name']);

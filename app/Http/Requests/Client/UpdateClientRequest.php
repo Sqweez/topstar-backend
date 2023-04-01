@@ -4,6 +4,7 @@ namespace App\Http\Requests\Client;
 
 use App\Models\Client;
 use App\Rules\NotBusyPass;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -32,6 +33,7 @@ class UpdateClientRequest extends FormRequest
             'pass' => ['sometimes', new NotBusyPass($this->id, Client::class)],
             'description' => 'sometimes',
             'photo' => 'sometimes|file',
+            'birth_date' => 'required',
             'cached_pass' => 'sometimes',
             'phone' => [
                 'required',
@@ -46,7 +48,8 @@ class UpdateClientRequest extends FormRequest
         $this->merge([
             'phone' => unmask_phone($this->phone),
             'description' => $this->description === 'null' ? '' : $this->description,
-            'cached_pass' => $this->pass
+            'cached_pass' => $this->pass,
+            'birth_date' => Carbon::parse($this->birth_date)
         ]);
     }
 }

@@ -18,6 +18,15 @@ use App\Http\Controllers\api\v1\{ClientBookmarkController,
     WithDrawalController};
 use Illuminate\Support\Facades\Route;
 
+Route::get('products-ref', function () {
+    $batches = \App\Models\ProductBatch::query()
+        ->whereHas('product', function ($q) {
+            return $q->where('name', 'LIKE', '%дети%');
+        })
+        ->update(['store_id' => 3]);
+
+    return $batches;
+});
 
 Route::group([
     'prefix' => 'v1',
