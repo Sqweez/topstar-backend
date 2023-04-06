@@ -54,9 +54,11 @@ class ImportPriceList extends Command
             }
             $this->line($service->nazvanie);
             Service::query()
-                ->create(
+                ->updateOrCreate(
                     [
-                        'id' => $service->id,
+                        'id' => $service->id
+                    ],
+                    [
                         'name' => $service->nazvanie,
                         'price' => $service->cena,
                         'description' => $service->opis,

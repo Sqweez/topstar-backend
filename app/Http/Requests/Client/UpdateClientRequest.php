@@ -48,7 +48,7 @@ class UpdateClientRequest extends FormRequest
         $this->merge([
             'phone' => unmask_phone($this->phone),
             'description' => $this->description === 'null' ? '' : $this->description,
-            'cached_pass' => $this->pass,
+            //'cached_pass' => $this->pass,
             'birth_date' => Carbon::parse($this->birth_date)
         ]);
     }
