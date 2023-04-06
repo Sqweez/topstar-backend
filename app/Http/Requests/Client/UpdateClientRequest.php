@@ -45,11 +45,12 @@ class UpdateClientRequest extends FormRequest
     }
 
     protected function prepareForValidation() {
+        $client = Client::find($this->id);
         $this->merge([
             'phone' => unmask_phone($this->phone),
             'description' => $this->description === 'null' ? '' : $this->description,
             //'cached_pass' => $this->pass,
-            'birth_date' => Carbon::parse($this->birth_date)
+            'birth_date' => $this->birth_date ? Carbon::parse($this->birth_date) : $client->birth_date,
         ]);
     }
 }
