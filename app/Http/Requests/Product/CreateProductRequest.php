@@ -29,7 +29,7 @@ class CreateProductRequest extends FormRequest
             'product_category_id' => 'required',
             'barcode' => [
                 'sometimes',
-                Rule::unique('products')
+                Rule::unique('products')->whereNull('deleted_at')
             ],
             'product_type_id' => 'required',
             'attribute' => 'string'
