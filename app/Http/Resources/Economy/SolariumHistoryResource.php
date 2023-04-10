@@ -3,9 +3,10 @@
 namespace App\Http\Resources\Economy;
 
 use App\Models\Session;
+use App\Models\SessionService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/* @mixin Session
+/* @mixin SessionService
  */
 
 class SolariumHistoryResource extends JsonResource
@@ -20,14 +21,12 @@ class SolariumHistoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'client' => $this->client,
-            'user' => $this->session_services->first()->user,
-            'club' => $this->club,
-            'minutes' => $this->session_services->reduce(function ($a, $c) {
-                return $a + $c['minutes'];
-            }, 0),
-            'date' => format_datetime($this->session_services->first()->created_at),
-            'created_at' => $this->session_services->first()->created_at,
+            'client' => $this->session->client,
+            'user' => $this->user,
+            'club' => $this->session->club,
+            'minutes' => $this->minutes,
+            'date' => format_datetime($this->created_at),
+            'created_at' => $this->created_at,
         ];
     }
 }
