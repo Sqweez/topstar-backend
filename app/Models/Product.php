@@ -89,15 +89,21 @@ class Product extends Model
         ]]);
 
         $quantitiesByClub = $this->batches->groupBy('store_id');
-        $quantitiesByClub = $quantitiesByClub->map(function ($qnts, $store_id) {
-           return [
-               'quantity' => collect($qnts)->reduce(function ($a, $c) {
-                   return $a + $c['quantity'];
-               }, 0),
-               'club_id' => $store_id,
-               'name' => $qnts->first()['club']['name']
-           ];
-        })->values();
+        $quantitiesByClub = $quantitiesByClub
+            ->map(function ($qnts, $store_id) {
+                return [
+                    'quantity' => collect($qnts)->reduce(function ($a, $c) {
+                        return $a + $c['quantity'];
+                        }, 0),
+                    'club_id' => $store_id,
+                    'name' => $qnts->first()['club']['name']
+                ];
+            })
+            ->values()
+            ->filter(function ($q) {
+                return $q['quantity'] > 0;
+            })
+            ->values();
 
         if (auth()->user()->is_boss) {
             $quantitiesByClub = $quantitiesByClub->mergeRecursive($totalQuantity);

@@ -24,17 +24,18 @@ class CreateProductBatchRequest extends FormRequest
     public function rules()
     {
         return [
-            'store_id' => 'required',
-            'quantity' => 'required',
-            'initial_quantity' => 'required',
+            //'store_id' => 'required',
+            //'quantity' => 'required',
+            //'initial_quantity' => 'required',
             'purchase_price' => 'sometimes',
-            'user_id' => 'required'
+            'user_id' => 'required',
+            'batches' => 'array|required'
         ];
     }
 
     protected function prepareForValidation() {
         $this->merge([
-            'initial_quantity' => $this->quantity,
+            //'initial_quantity' => $this->quantity,
             'user_id' => auth()->id()
         ]);
     }

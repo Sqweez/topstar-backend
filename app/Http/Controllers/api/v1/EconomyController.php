@@ -102,7 +102,7 @@ class EconomyController extends ApiController
             ->whereDate('created_at', '<=', now()->endOfDay())
             ->shopSales()
             ->when(!auth()->user()->getIsBossAttribute(), function ($query) {
-                return $query->where('club_id', auth()->user()->club_id);
+                return $query->where('user_id', auth()->id());
             })
             ->with(['client', 'user', 'transaction', 'salable.product', 'club'])
             ->latest()

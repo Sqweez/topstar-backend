@@ -20,6 +20,8 @@ class ProductsListResource extends JsonResource
      */
     public function toArray($request)
     {
+        $quantity = $this->collectQuantities();
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -29,8 +31,11 @@ class ProductsListResource extends JsonResource
             'product_category_id' => $this->product_category_id,
             'product_type_id' => $this->product_type_id,
             'product_type' => $this->product_type,
-            'quantity' => $this->collectQuantities(),
+            'quantity' => $quantity,
             'barcode' => $this->barcode,
+            'not_in_stock' => collect($quantity)->reduce(function ($a, $c) {
+                return $a + $c['quantity'];
+            }, 0) === 0
             //'batches' => $this->batches,
         ];
     }

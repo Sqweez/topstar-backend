@@ -126,7 +126,7 @@ class EconomyService {
             ->whereDate('created_at', '>=', $start)
             ->whereDate('created_at', '<=', $finish)
             ->where('salable_type', ServiceSale::class)
-            ->with(['client', 'user', 'club', 'salable.service'])
+            ->with(['client', 'user', 'club', 'salable.service', 'transaction'])
             ->get();
         return PurchasedPrograms::collection($sales);
     }

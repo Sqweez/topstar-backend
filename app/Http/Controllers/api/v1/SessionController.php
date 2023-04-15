@@ -56,9 +56,9 @@ class SessionController extends ApiController
     }
 
     public function finish(Client $client, ClientService $clientService): JsonResponse {
-        if (!$client->active_session) {
+        /*if (!$client->active_session) {
             return $this->respondError('Невозможно завершить сеанс, перезагрузите страницу!');
-        }
+        }*/
         $clientService->finish($client);
         return $this->respondSuccess([
             'client' => SingleClientResource::make(Client::find($client->id))

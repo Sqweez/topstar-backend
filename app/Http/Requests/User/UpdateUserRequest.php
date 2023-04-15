@@ -39,7 +39,8 @@ class UpdateUserRequest extends FormRequest
             'description' => 'sometimes',
             'photo' => 'sometimes|file',
             'club_id' => 'sometimes|nullable',
-            'clubs_id' => 'array|required'
+            'clubs_id' => 'array|required',
+            'password' => 'sometimes'
         ];
     }
 

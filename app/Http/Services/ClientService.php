@@ -108,11 +108,13 @@ class ClientService {
 
     public function finish(Client $client) {
         $session = $client->active_session;
+        if ($session) {
+            $session->update([
+                'finish_user_id' => auth()->id(),
+                'finished_at' => now(),
+                'is_system_finished' => app()->runningInConsole()
+            ]);
+        }
         $client->update(['cached_trinket' => null]);
-        $session->update([
-            'finish_user_id' => auth()->id(),
-            'finished_at' => now(),
-            'is_system_finished' => app()->runningInConsole()
-        ]);
     }
 }

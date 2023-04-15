@@ -31,6 +31,9 @@ class UserService {
 
     public function updateUser(User $user, $payload = []): User {
         return DB::transaction(function () use ($payload, $user) {
+            if (isset($payload['password'])) {
+                $payload['password'] = \Hash::make($payload['password']);
+            }
             $user->update($payload);
             if (isset($payload['pass'])) {
                 $user->pass()->delete();

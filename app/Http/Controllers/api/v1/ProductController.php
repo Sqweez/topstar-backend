@@ -80,7 +80,16 @@ class ProductController extends ApiController
     }
 
     public function createProductBatch(Product $product, CreateProductBatchRequest $request): JsonResponse {
-        $product->batches()->create($request->validated());
+        $validatedData = $request->validated();
+        foreach ($validatedData['batches'] as $batch) {
+            $product->batches()->create([
+                'quantity' => $batch['quantity'],
+                'initial_quantity' => $batch['quantity'],
+                'purchase_price' => $validatedData['purchase_price'],
+                'store_id' => $batch['id']
+            ]);
+        }
+        //$product->batches()->create($request->validated());
         $product->refresh();
         $product->load('batches.club');
         return $this->respondSuccess([

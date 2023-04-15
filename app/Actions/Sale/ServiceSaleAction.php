@@ -22,7 +22,7 @@ class ServiceSaleAction {
                 $serviceSale = ServiceSale::create($serviceSalePayload);
                 $salePayload = $this->_mapSalePayload($payload);
                 $sale = $serviceSale->sale()->create($salePayload);
-                $transactionPayload = $this->_mapTransactionPayload($service, $payload, $repeatCount);
+                $transactionPayload = $this->_mapTransactionPayload($service, $payload, $i);
                 $transaction = $sale->transaction()->create($transactionPayload);
                 // Инкремент т.к. значение транзакции уже отрицательное
                 $client->increment('balance', $transaction->amount);
@@ -46,7 +46,7 @@ class ServiceSaleAction {
         ];
     }
 
-    public function _mapTransactionPayload(Service $service, $payload, $repeatCount = 1): array {
+    public function _mapTransactionPayload(Service $service, $payload, $iterationStep = 0): array {
 
         $serviceName = $service->name;
 
@@ -56,7 +56,11 @@ class ServiceSaleAction {
 
         $description = sprintf("Списание средств за %s", $serviceName);
 
-        $amount = ceil($payload['amount'] / $repeatCount) * -1;
+        $amount = ceil($payload['amount']) * -1;
+
+        if ($iterationStep > 0) {
+            $amount = 0;
+        }
 
         return [
             'user_id' => $payload['user_id'],
