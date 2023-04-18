@@ -15,6 +15,7 @@ use App\Http\Controllers\api\v1\{ClientBookmarkController,
     ServiceController,
     SessionController,
     UserController,
+    UserReportController,
     WithDrawalController};
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,7 @@ Route::group([
     Route::apiResource('roles', RoleController::class)->only(['index']);
     Route::post('users/upload/{user}', [UserController::class, 'uploadPhoto']);
     Route::post('users/{user}/club', [UserController::class, 'chooseWorkingClub']);
+    Route::get('users/{user}/reports', [UserReportController::class, 'index']);
     Route::apiResource('users', UserController::class);
     // Пополнение баланса
     Route::post('clients/{client}/top-up', [ClientController::class, 'topUpClientAccount']);
@@ -94,6 +96,7 @@ Route::group([
         Route::get('in-gym-clients', [DashboardController::class, 'getInGymClients']);
         Route::get('guests', [DashboardController::class, 'getGuestsClients']);
         Route::get('birthday', [DashboardController::class, 'getBirthdayClients']);
+        Route::get('sleeping', [DashboardController::class, 'getSleepingClients']);
     });
     // Товары
     Route::post('products/{product}/batch', [ProductController::class, 'createProductBatch']);

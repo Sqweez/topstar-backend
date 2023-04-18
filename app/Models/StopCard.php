@@ -13,7 +13,7 @@ class StopCard extends Model
     protected $guarded = ['id'];
 
     public function client(): BelongsTo {
-        return $this->belongsTo(Client::class)->select(['id', 'name']);
+        return $this->belongsTo(Client::class)->select(['id', 'name'])->withTrashed();
     }
 
     public function user(): BelongsTo {

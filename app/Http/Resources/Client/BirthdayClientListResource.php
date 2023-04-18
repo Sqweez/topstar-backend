@@ -19,6 +19,7 @@ class BirthdayClientListResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'phone' => mask_phone($this->phone),
+            'club' => $this->club,
         ];
     }
 }

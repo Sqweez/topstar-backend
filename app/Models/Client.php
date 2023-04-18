@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -103,6 +104,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 class Client extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
+
+    use SoftDeletes;
 
     const MEDIA_AVATAR = 'client_avatar';
 
@@ -216,6 +219,12 @@ class Client extends Model implements HasMedia
         return $this
             ->hasOne(Session::class)
             ->where('finished_at', null);
+    }
+
+    public function last_session() {
+        return $this
+            ->hasOne(Session::class)
+            ->latest('created_at');
     }
 
     public function getBirthDateFormattedAttribute(): ?string {

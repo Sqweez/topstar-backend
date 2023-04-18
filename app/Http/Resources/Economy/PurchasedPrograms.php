@@ -22,11 +22,11 @@ class PurchasedPrograms extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->salable->service->name,
+            'name' => $this->salable->service ? $this->salable->service->name : 'Удаленная программа',
             'user' => $this->user,
             'club' => $this->club,
             'client' => $this->client,
-            'amount' => $this->transaction->amount * -1,
+            'amount' => optional($this->transaction)->amount * -1,
             'date' => format_datetime($this->created_at)
         ];
     }

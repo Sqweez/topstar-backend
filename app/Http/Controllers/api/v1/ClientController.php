@@ -95,10 +95,11 @@ class ClientController extends ApiController {
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return Response
+     * @return JsonResponse
      */
-    public function destroy($id) {
-        //
+    public function destroy(int $id): JsonResponse {
+        Client::whereKey($id)->delete();
+        return $this->respondSuccess([], 'Клиент успешно удален');
     }
 
     public function topUpClientAccount(TopUpClientAccountRequest $request, Client $client, CreateClientReplenishmentAction $action): JsonResponse {
