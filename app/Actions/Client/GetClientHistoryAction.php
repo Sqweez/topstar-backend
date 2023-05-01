@@ -117,7 +117,7 @@ class GetClientHistoryAction {
             })
             ->whereHas('service_sale', function ($query) {
                 return $query->whereHas('service', function ($subQuery) {
-                    return $subQuery->whereIn('service_type_id', [Service::TYPE_PROGRAM, Service::TYPE_PROGRAM]);
+                    return $subQuery->whereIn('service_type_id', [Service::TYPE_UNLIMITED, Service::TYPE_PROGRAM]);
                 });
             })
             ->whereDate('created_at', '>=', $this->start)

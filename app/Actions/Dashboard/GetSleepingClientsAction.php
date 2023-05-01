@@ -3,7 +3,9 @@
 namespace App\Actions\Dashboard;
 
 use App\Models\Client;
+use App\Models\ServiceSale;
 use App\Models\User;
+use Carbon\Carbon;
 
 class GetSleepingClientsAction {
 
@@ -23,27 +25,46 @@ class GetSleepingClientsAction {
                 function ($query) use ($user) {
                     return $query->whereDate('birth_date', '>=', now()->subYears(14));
                 })
-            ->whereDoesntHave('sessions', function ($query) {
-                return $query->whereDate('created_at', '>=', today()->subDays(45));
+            ->whereHas('programs', function ($q) {
+                return $q
+                    ->whereHasMorph('salable', [ServiceSale::class], function ($q) {
+                        return $q->whereDate('active_until', today()->subDays(45));
+                    });
             })
-            ->whereHas('sessions', function ($query) {
-                return $query->whereDate('created_at', '>=', today()->subDays(120));
-            })
+           /* ->whereDoesntHave('programs', function ($q) {
+                return $q
+                    ->whereHasMorph('salable', [ServiceSale::class], function ($q) {
+                        return $q
+                            ->whereDate('active_until', '>', today()->subDays(45))
+                            ->whereNotNull('active_until');
+                    });
+            })*/
+            ->with('programs.salable')
             ->with('club')
             ->with('last_session')
             ->get();
 
-        return $clients->map(function (Client $client) {
-            return [
-                'id' => $client->id,
-                'name' => $client->name,
-                'phone' => $client->phone,
-                'club' => [
-                    'id' => $client->club_id,
-                    'name' => $client->club->name
-                ],
-                'la' => $client->last_session,
-                'last_session_date' => $client->last_session ? format_date($client->last_session->created_at) : 'Неизвестно'
+        return $clients->filter(function (Client $client) {
+            $activePrograms = $client->programs->filter(function ($program) {
+                return ($program->salable->active_until === null ||
+                    Carbon::parse($program->salable->active_until)->gt(today()->subDays(45))) &&
+                    !in_array($program->salable->service_id, [176, 148]);
+            });
+            return $activePrograms->count() === 0;
+        })
+            ->values()
+            ->map(function (Client $client) {
+                return [
+                    'id' => $client->id,
+                    'name' => $client->name,
+                    'phone' => $client->phone,
+                    'club' => [
+                        'id' => $client->club_id,
+                        'name' => $client->club->name
+                    ],
+                    'la' => $client->last_session,
+                    'last_session_date' => $client->last_session ? format_date($client->last_session->created_at) : 'Неизвестно',
+                    'pgorams' => $client->programs,
             ];
         });
     }
