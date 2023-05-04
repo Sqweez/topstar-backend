@@ -77,7 +77,8 @@ class Session extends Model
 
     public function trinket(): BelongsTo {
         return $this->belongsTo(Trinket::class)->withDefault([
-            'code' => null
+            'code' => null,
+            'cabinet_number' => 'Неизвестно'
         ]);
     }
 
