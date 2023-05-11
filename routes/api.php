@@ -14,6 +14,7 @@ use App\Http\Controllers\api\v1\{ClientBookmarkController,
     SaleController,
     ServiceController,
     SessionController,
+    StatsController,
     UserController,
     UserReportController,
     WithDrawalController};
@@ -108,8 +109,14 @@ Route::group([
     Route::delete('bookmarks/{id}', [ClientBookmarkController::class, 'deleteBookmark']);
     Route::get('bookmarks', [ClientBookmarkController::class, 'index']);
     Route::post('bookmarks', [ClientBookmarkController::class, 'store']);
+
     Route::group(['prefix' => 'withdrawals'], function () {
         Route::post('/', [WithDrawalController::class, 'store']);
+    });
+
+    Route::group(['prefix' => 'stats'], function () {
+        Route::get('/clients-by-club', [StatsController::class, 'getClientsByClub']);
+        Route::get('/active-clients', [StatsController::class, 'getActiveClients']);
     });
 });
 

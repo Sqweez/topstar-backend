@@ -114,7 +114,8 @@ class Client extends Model implements HasMedia
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-        'club_id' => 'integer'
+        'club_id' => 'integer',
+        'has_active_programs' => 'boolean'
     ];
 
 
@@ -259,6 +260,10 @@ class Client extends Model implements HasMedia
             return 'Элегант';
         }
         return 'Взрослый';
+    }
+
+    public function getGenderDisplayAttribute() {
+        return $this->gender === 'F' ? 'Женский' : 'Мужской';
     }
 
     public function getIsBirthdayAttribute(): bool {

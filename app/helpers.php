@@ -89,3 +89,12 @@ if (!function_exists('get_dates_range')) {
         return $dates;
     }
 }
+
+if (!function_exists('calculate_percentage')) {
+    function calculate_percentage ($needle, $from) {
+        if ($from === 0) {
+            return 0;
+        }
+        return ($needle * 100) / $from;
+    }
+}
