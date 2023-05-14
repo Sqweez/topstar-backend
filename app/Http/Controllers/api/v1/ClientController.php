@@ -98,6 +98,12 @@ class ClientController extends ApiController {
      * @return JsonResponse
      */
     public function destroy(int $id): JsonResponse {
+        $client = Client::find($id);
+        Pass::whereCode($client->id)->update([
+            'passable_id' => null,
+            'passable_type' => null,
+        ]);
+        $client->update(['cached_pass' => null]);
         Client::whereKey($id)->delete();
         return $this->respondSuccess([], 'Клиент успешно удален');
     }

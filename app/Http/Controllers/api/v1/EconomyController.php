@@ -96,10 +96,13 @@ class EconomyController extends ApiController
         return BarSaleHistoryResource::collection($barProductSales);
     }
 
-    public function getMySales(): AnonymousResourceCollection {
+    public function getMySales(Request $request): AnonymousResourceCollection {
+        $defaultDate = today()->format('Y-m-d');
+        $start = Carbon::parse($request->get('start', $defaultDate));
+        $finish = Carbon::parse($request->get('finish', $defaultDate));
         $barProductSales = Sale::query()
-            ->whereDate('created_at', '>=', now()->startOfDay())
-            ->whereDate('created_at', '<=', now()->endOfDay())
+            ->whereDate('created_at', '>=', $start->startOfDay())
+            ->whereDate('created_at', '<=', $finish->endOfDay())
             ->shopSales()
             ->when(!auth()->user()->getIsBossAttribute(), function ($query) {
                 return $query->where('user_id', auth()->id());

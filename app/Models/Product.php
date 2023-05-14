@@ -56,7 +56,7 @@ class Product extends Model
     protected static function boot() {
         parent::boot();
         static::addGlobalScope('order', function ($builder) {
-            $builder->orderBy('name', 'asc');
+            $builder->orderBy('id', 'desc');
         });
     }
 

@@ -75,6 +75,8 @@ class ProductController extends ApiController
     }
 
     public function destroy($id) {
+        Product::whereKey($id)
+            ->update(['barcode' => null]);
         Product::whereKey($id)->delete();
         return $this->respondSuccessNoReport([]);
     }

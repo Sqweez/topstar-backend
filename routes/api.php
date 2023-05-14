@@ -117,6 +117,9 @@ Route::group([
     Route::group(['prefix' => 'stats'], function () {
         Route::get('/clients-by-club', [StatsController::class, 'getClientsByClub']);
         Route::get('/active-clients', [StatsController::class, 'getActiveClients']);
+        Route::get('/price-history', [StatsController::class, 'getPriceSaleHistory']);
+        Route::get('/wrong-birth', [StatsController::class, 'getWrongBirthDateClients']);
+        Route::get('/unlimited-ending', [StatsController::class, 'getUnlimitedEndingClients']);
     });
 });
 
