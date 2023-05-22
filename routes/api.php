@@ -18,39 +18,7 @@ use App\Http\Controllers\api\v1\{ClientBookmarkController,
     UserController,
     UserReportController,
     WithDrawalController};
-use GuzzleHttp\Client;
-use App\Models\Client as ClientModel;
 use Illuminate\Support\Facades\Route;
-
-Route::get('clients-photo', function () {
-    $clients = \App\Models\Client::query()
-        ->whereDoesntHave('media')
-        ->whereYear('created_at', 2023)
-        ->get();
-
-    $clientIds = $clients->pluck('id')->join(',');
-    $client = new Client();
-    $response = $client->get('http://top-star.kz/export/export_clients_photo.php?ids=' . $clientIds);
-    $clients = json_decode(
-        $response->getBody()
-    );
-
-    foreach ($clients as $client) {
-        if ($client->photo && !\Str::contains($client->photo, 'nophoto')) {
-            $photoExtension = explode('.', $client->photo)[1];
-            if (in_array($photoExtension, ['jpeg', 'jpg', 'png'])) {
-                try {
-                    $_client = ClientModel::find($client->id);
-                    $_client
-                        ->addMediaFromUrl(sprintf("http://top-star.kz/photos/%s", $client->photo))
-                        ->toMediaCollection(ClientModel::MEDIA_AVATAR);;
-                } catch (\Exception $exception) {
-                    \Log::error($exception->getMessage());
-                }
-            }
-        }
-    }
-});
 
 Route::group([
     'prefix' => 'v1',

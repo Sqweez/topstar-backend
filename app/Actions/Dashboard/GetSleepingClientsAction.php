@@ -6,18 +6,21 @@ use App\Models\Client;
 use App\Models\ServiceSale;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class GetSleepingClientsAction {
 
-    public function handle() {
+    public function handle(Request $request) {
         /* @var User $user */
         $user = auth()->user();
+        $date = Carbon::parse($request->get('date'));
         $clients = Client::query()
             // для детских клубов
             ->when(
                 (!$user->getIsBossAttribute() && $user->club_id !== __hardcoded(3)),
                 function ($query) use ($user) {
-                    return $query->where('club_id', $user->club_id);
+                    return $query->where('club_id', $user->club_id)
+                        ->whereDate('birth_date', '<', now()->subYears(14));
                 })
             // для детских клубов
             ->when(
@@ -25,10 +28,10 @@ class GetSleepingClientsAction {
                 function ($query) use ($user) {
                     return $query->whereDate('birth_date', '>=', now()->subYears(14));
                 })
-            ->whereHas('programs', function ($q) {
+            ->whereHas('programs', function ($q) use ($date) {
                 return $q
-                    ->whereHasMorph('salable', [ServiceSale::class], function ($q) {
-                        return $q->whereDate('active_until', today()->subDays(45));
+                    ->whereHasMorph('salable', [ServiceSale::class], function ($q) use ($date) {
+                        return $q->whereDate('active_until', $date);
                     });
             })
            /* ->whereDoesntHave('programs', function ($q) {
@@ -44,10 +47,10 @@ class GetSleepingClientsAction {
             ->with('last_session')
             ->get();
 
-        return $clients->filter(function (Client $client) {
-            $activePrograms = $client->programs->filter(function ($program) {
+        return $clients->filter(function (Client $client) use ($date) {
+            $activePrograms = $client->programs->filter(function ($program) use ($date) {
                 return ($program->salable->active_until === null ||
-                    Carbon::parse($program->salable->active_until)->gt(today()->subDays(45))) &&
+                    Carbon::parse($program->salable->active_until)->gt($date)) &&
                     !in_array($program->salable->service_id, [176, 148]);
             });
             return $activePrograms->count() === 0;
