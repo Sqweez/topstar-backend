@@ -28,6 +28,8 @@ class GetUnlimitedEndingClientsAction {
                     'active_until' => format_date($sale->active_until),
                     'service' => $sale->service,
                     'club' => $sale->sale->club,
+                    'unmasked_phone' => $sale->sale->client->phone,
+                    'client_id' => $sale->sale->client_id,
                 ];
             })
         ];

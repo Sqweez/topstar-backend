@@ -23,6 +23,7 @@ class DashboardClientListResource extends JsonResource
             'name' => $this->client->name,
             'phone' => mask_phone($this->client->phone),
             'club' => $this->club,
+            'unmasked_phone' => $this->client->phone,
         ];
     }
 }

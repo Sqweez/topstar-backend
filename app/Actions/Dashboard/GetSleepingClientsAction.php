@@ -61,13 +61,14 @@ class GetSleepingClientsAction {
                     'id' => $client->id,
                     'name' => $client->name,
                     'phone' => $client->phone,
+                    'unmasked_phone' => $client->phone,
                     'club' => [
                         'id' => $client->club_id,
                         'name' => $client->club->name
                     ],
-                    'la' => $client->last_session,
+                    //'la' => $client->last_session,
                     'last_session_date' => $client->last_session ? format_date($client->last_session->created_at) : 'Неизвестно',
-                    'pgorams' => $client->programs,
+                    //'pgorams' => $client->programs,
             ];
         });
     }

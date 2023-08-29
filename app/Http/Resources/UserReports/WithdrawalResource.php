@@ -22,7 +22,9 @@ class WithdrawalResource extends JsonResource
             'club' => $this->club,
             'amount' => $this->amount,
             'date' => format_datetime($this->created_at),
-            'description' => $this->description
+            'description' => $this->description,
+            'is_bar' => $this->description && \Str::contains(\Str::lower($this->description), 'бар'),
+            'payment_type' => $this->payment_type,
         ];
     }
 }
