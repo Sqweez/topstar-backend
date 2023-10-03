@@ -113,5 +113,11 @@ Route::group([
     });
 });
 
+Route::prefix('mobile')->group(function () {
+    Route::prefix('v1')->group(function () {
+        
+    });
+});
+
 require __DIR__ . '/auth.php';
 

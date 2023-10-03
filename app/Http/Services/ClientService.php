@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Models\Client;
 use App\Models\SessionService;
+use App\Models\Trinket;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -50,10 +51,7 @@ class ClientService {
     public function writeOff($payload = []) {
         return DB::transaction(function () use ($payload) {
             $client = Client::find($payload['client_id']);
-            $session = $client->active_session;
-            if (!$session) {
-                $session = $this->open($client, $payload);
-            }
+            $session = $this->open($client, $payload);
             SessionService::create([
                 'service_sale_id' => $payload['service_sale_id'],
                 'user_id' => $payload['user_id'],
@@ -97,7 +95,17 @@ class ClientService {
 
     public function open(Client $client, $payload = []): Model {
         if ($client->active_session) {
-            return $client->active_session;
+            /*return $client->active_session;*/
+            $session = $client->active_session;
+            $this->finish($client);
+            $client->update([
+                'cached_trinket' => optional(Trinket::find($session->trinket_id))->code
+            ]);
+            return $client->sessions()->create([
+                'start_user_id' => $payload['user_id'],
+                'club_id' => auth()->user()->club_id,
+                'trinket_id' => $session->trinket_id,
+            ]);
         }
         return $client->sessions()->create([
             'start_user_id' => $payload['user_id'],
