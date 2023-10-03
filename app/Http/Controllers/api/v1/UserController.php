@@ -22,10 +22,12 @@ class UserController extends ApiController
      *
      * @return AnonymousResourceCollection
      */
-    public function index(): AnonymousResourceCollection {
+    public function index(Request $request): AnonymousResourceCollection {
         $users =  User::query()
             ->with(['clubs', 'roles'])
-            ->where('is_active', true)
+            ->when(!$request->has('with-inactive'), function ($q) {
+                return $q->where('is_active', true);
+            })
             ->get();
         return UserListResource::collection($users);
     }
