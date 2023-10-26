@@ -100,9 +100,9 @@ class Product extends Model
                 ];
             })
             ->values()
-            ->filter(function ($q) {
+           /* ->filter(function ($q) {
                 return $q['quantity'] > 0;
-            })
+            })*/
             ->values();
 
         if (auth()->user()->is_boss) {
