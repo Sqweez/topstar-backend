@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\mobile\v1\AuthController;
 use App\Http\Controllers\api\v1\{ClientBookmarkController,
     ClientController,
     ClubController,
@@ -113,6 +114,14 @@ Route::group([
     });
 });
 
-require __DIR__ . '/mobile.php';
+Route::prefix('mobile')->group(function () {
+    Route::prefix('v1')->group(function () {
+        Route::prefix('auth')->group(function () {
+            Route::get('/me', [AuthController::class, 'me']);
+            Route::post('/login', [AuthController::class, 'login']);
+        });
+    });
+});
+
 require __DIR__ . '/auth.php';
 
