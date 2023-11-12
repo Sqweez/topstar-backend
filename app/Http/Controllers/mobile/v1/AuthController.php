@@ -16,7 +16,7 @@ class AuthController extends ApiController
         if (!$client) {
             return $this->respondError('Клиент с данным номером не зарегистрирован в нашей базе!', 404);
         }
-        if ($password !== __hardcoded('123456')) {
+        if ($password !== $client->mobile_password) {
             return $this->respondError('Неверный пароль, обратитесь к менеджеру TopStar');
         }
 

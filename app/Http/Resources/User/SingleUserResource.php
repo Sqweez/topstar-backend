@@ -37,7 +37,8 @@ class SingleUserResource extends JsonResource
             'birth_date' => $this->birth_date_formatted,
             'pass' => $this->pass->code ?? '',
             'description' => $this->description,
-            'clubs_id' => $clubs->pluck('id')
+            'clubs_id' => $clubs->pluck('id'),
+            'is_active' => $this->is_active,
         ];
     }
 }

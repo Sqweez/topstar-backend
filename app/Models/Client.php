@@ -107,6 +107,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property-read \App\Models\Session|null $last_session
  * @method static Builder|Client whereCachedSolariumTotal($value)
  * @method static Builder|Client whereHasActivePrograms($value)
+ * @property string|null $mobile_password
+ * @method static Builder|Client whereMobilePassword($value)
  */
 class Client extends Authenticatable implements HasMedia, JWTSubject
 {
