@@ -33,6 +33,7 @@ Route::group([
     Route::post('users/upload/{user}', [UserController::class, 'uploadPhoto']);
     Route::post('users/{user}/club', [UserController::class, 'chooseWorkingClub']);
     Route::get('users/{user}/reports', [UserReportController::class, 'index']);
+    Route::post('users/{user}/restore', [UserController::class, 'restoreUser']);
     Route::apiResource('users', UserController::class);
     // Пополнение баланса
     Route::post('clients/{client}/top-up', [ClientController::class, 'topUpClientAccount']);

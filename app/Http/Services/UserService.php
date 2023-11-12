@@ -59,10 +59,6 @@ class UserService {
 
     public function deleteUser(User $user) {
         $user->pass()->delete();
-        $user->update([
-            'cached_pass' => null,
-            'cached_trinket' => null,
-        ]);
         $user->delete();
     }
 }

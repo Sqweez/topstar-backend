@@ -100,6 +100,12 @@ class UserController extends ApiController
      */
     public function destroy(User $user, UserService $userService): JsonResponse {
         $userService->deleteUser($user);
-        return $this->respondSuccess([], 'Пользователь успешно удален!');
+        return $this->respondSuccess([], 'Сотрудник успешно удален!');
+    }
+
+    public function restoreUser(User $user) {
+        $user->restore();
+        $user->update(['is_active' => true]);
+        return $this->respondSuccess([], 'Сотрудник успешно восстановлен!');
     }
 }
