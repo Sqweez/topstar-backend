@@ -55,6 +55,7 @@ class SingleClientResource extends JsonResource
                 ->where('user_id', auth()->id())
                 ->exists(),
             'mobile_programs_with_details' => $this->getProgramsWithDetails(ClientPurchasedServices::collection($this->lastPrograms)->toArray($request)),
+            'mobile_password' => $this->mobile_password,
         ];
     }
 
