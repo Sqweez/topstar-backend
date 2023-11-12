@@ -39,6 +39,8 @@ class SingleUserResource extends JsonResource
             'description' => $this->description,
             'clubs_id' => $clubs->pluck('id'),
             'is_active' => $this->is_active,
+            'mobile_position' => $this->string_role,
+            'is_trainer' => $this->is_trainer,
         ];
     }
 }

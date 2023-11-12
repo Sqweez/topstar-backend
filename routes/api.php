@@ -185,6 +185,20 @@ Route::prefix('mobile')->middleware([])->group(function () {
                     ],
             ];
         });
+
+        Route::get('club/team', function (\Illuminate\Http\Request $request) {
+            $users = \App\Models\User::query()
+                ->where('is_active', true)
+                ->when($request->filled('club_id'), function ($query) use ($request) {
+                    return $query->whereHas('club', function ($q) use ($request) {
+                        return $q->where('id', $request->get('club_id'));
+                    });
+                })
+                ->with(['media'])
+                ->get();
+
+            return \App\Http\Resources\User\SingleUserResource::collection($users);
+        });
     });
 });
 
