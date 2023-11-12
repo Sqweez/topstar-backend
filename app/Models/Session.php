@@ -44,6 +44,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $is_system_finished
  * @property-read \App\Models\SessionService|null $session_service
  * @method static \Illuminate\Database\Eloquent\Builder|Session whereIsSystemFinished($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SessionService[] $session_services
+ * @property-read int|null $session_services_count
  */
 class Session extends Model
 {

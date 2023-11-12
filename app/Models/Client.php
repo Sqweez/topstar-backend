@@ -9,12 +9,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
  * App\Models\Client
@@ -100,8 +101,14 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property string|null $cached_trinket
  * @method static Builder|Client whereCachedPass($value)
  * @method static Builder|Client whereCachedTrinket($value)
+ * @property int $cached_solarium_total
+ * @property bool $has_active_programs
+ * @property-read mixed $gender_display
+ * @property-read \App\Models\Session|null $last_session
+ * @method static Builder|Client whereCachedSolariumTotal($value)
+ * @method static Builder|Client whereHasActivePrograms($value)
  */
-class Client extends Model implements HasMedia
+class Client extends Authenticatable implements HasMedia, JWTSubject
 {
     use HasFactory, InteractsWithMedia;
 
@@ -289,5 +296,13 @@ class Client extends Model implements HasMedia
                     Carbon::parse($sale['salable']['active_until'])->diffInDays(now()) >= Club::UNLIMITED_DAYS_BEFORE_DISCOUNT;
             })
             ->count() > 0;
+    }
+
+    public function getJWTIdentifier() {
+        // TODO: Implement getJWTIdentifier() method.
+    }
+
+    public function getJWTCustomClaims() {
+        // TODO: Implement getJWTCustomClaims() method.
     }
 }

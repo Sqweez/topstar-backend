@@ -7,6 +7,7 @@ use App\Models\ClientBookmark;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
 
 /**
 * @mixin Client
@@ -35,6 +36,7 @@ class SingleClientResource extends JsonResource
             'photo' => $this->getFirstMediaUrl(Client::MEDIA_AVATAR),
             'birth_date_formatted' => $this->birth_date_formatted,
             'age' => $this->age,
+            'age_full' => $this->ageSuffix($this->age),
             'age_type' => $this->age_type,
             'birth_date' => $this->birth_date,
             'is_birthday_today' => $this->is_birthday,
@@ -51,7 +53,44 @@ class SingleClientResource extends JsonResource
             'in_bookmark' => ClientBookmark::query()
                 ->where('client_id', $this->id)
                 ->where('user_id', auth()->id())
-                ->exists()
+                ->exists(),
+            'mobile_programs_with_details' => $this->getProgramsWithDetails(ClientPurchasedServices::collection($this->lastPrograms)->toArray($request)),
         ];
+    }
+
+    public function ageSuffix($age) {
+        $lastDigit = $age % 10;
+        $lastTwoDigits = $age % 100;
+
+        if ($lastTwoDigits >= 11 && $lastTwoDigits <= 14) {
+            return $age . ' лет';
+        } elseif ($lastDigit === 1) {
+            return $age . ' год';
+        } elseif ($lastDigit >= 2 && $lastDigit <= 4) {
+            return $age . ' года';
+        } else {
+            return $age . ' лет';
+        }
+    }
+
+    public function getProgramsWithDetails($programs): Collection {
+        return collect($programs)
+            ->map(function ($program) {
+                $details = [
+                    sprintf('Тренер: %s', $program['last_trainer']['name']),
+                    sprintf('Действительно до: %s', $program['active_until']),
+                    sprintf('Сделано посещений: %s', $program['visits_count']),
+                ];
+
+                if ($program['type']['id'] === __hardcoded(3)) {
+                    $details[] = sprintf('Осталось посещений: %s', $program['remaining_visits']);
+                }
+
+                return [
+                    'id' => $program['id'],
+                    'title' => $program['name'],
+                    'details' => $details,
+                ];
+            });
     }
 }

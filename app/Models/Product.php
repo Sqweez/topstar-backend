@@ -45,6 +45,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|Product withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Product withoutTrashed()
+ * @property int|null $stock_price
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereStockPrice($value)
  */
 class Product extends Model
 {

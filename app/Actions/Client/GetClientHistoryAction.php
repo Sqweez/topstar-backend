@@ -2,11 +2,13 @@
 
 namespace App\Actions\Client;
 
+use App\Http\Resources\Client\ClientCustomServiceResource;
 use App\Http\Resources\Client\ClientProductSaleHistoryResource;
 use App\Http\Resources\Client\ClientReplenishmentsResource;
 use App\Http\Resources\Client\ClientServiceSaleHistoryResource;
 use App\Http\Resources\Client\ClientVisitsHistoryResource;
 use App\Models\Client;
+use App\Models\ClientCustomService;
 use App\Models\ClientReplenishment;
 use App\Models\ProductSale;
 use App\Models\Sale;
@@ -35,7 +37,20 @@ class GetClientHistoryAction {
             'solarium_purchases' => $this->collectSolariumPurchases(),
             'visits' => $this->collectVisits(),
             'solarium_visits' => $this->collectSolariumVisits(),
+            'custom_services' => $this->collectCustomServices(),
         ];
+    }
+
+    private function collectCustomServices(): AnonymousResourceCollection {
+        $clientCustomActions = ClientCustomService::query()
+            ->whereDate('created_at', '>=', $this->start)
+            ->whereDate('created_at', '<=', $this->finish)
+            ->where('client_id', $this->client->id)
+            ->with(['user:id,name', 'club:id,name', 'custom_service:id,name'])
+            ->latest()
+            ->get();
+
+        return ClientCustomServiceResource::collection($clientCustomActions);
     }
 
     private function collectClientReplenishments(): AnonymousResourceCollection {

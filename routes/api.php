@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\mobile\v1\AuthController;
+use App\Http\Controllers\mobile\v1\ProfileController;
+use App\Http\Controllers\mobile\v1\ClientRequestController;
 use App\Http\Controllers\api\v1\{ClientBookmarkController,
     ClientController,
     ClubController,
@@ -114,12 +116,15 @@ Route::group([
     });
 });
 
-Route::prefix('mobile')->group(function () {
+Route::prefix('mobile')->middleware([])->group(function () {
     Route::prefix('v1')->group(function () {
         Route::prefix('auth')->group(function () {
             Route::get('/me', [AuthController::class, 'me']);
-            Route::post('/login', [AuthController::class, 'login']);
+            Route::post('/login', [AuthController::class, 'login'])->withoutMiddleware('auth:api');
         });
+
+        Route::get('profile', [ProfileController::class, 'getMyProfile']);
+        Route::post('request', [ClientRequestController::class, 'store']);
     });
 });
 

@@ -64,6 +64,11 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceSale whereActivatedAt($value)
  * @property int|null $client_id
  * @method static \Illuminate\Database\Eloquent\Builder|ServiceSale whereClientId($value)
+ * @property-read \App\Models\SessionService|null $active_session
+ * @property-read \App\Models\StopCard|null $active_stop
+ * @property-read bool $is_stopped
+ * @property-read Collection|\App\Models\StopCard[] $stops
+ * @property-read int|null $stops_count
  */
 class ServiceSale extends Model
 {

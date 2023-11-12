@@ -121,14 +121,35 @@ class EconomyService {
         return ClubGuests::collection($sessions);
     }
 
-    private function getProgramPurchasedReport($start, $finish): AnonymousResourceCollection {
+    private function getProgramPurchasedReport($start, $finish) {
         $sales = Sale::query()
             ->whereDate('created_at', '>=', $start)
             ->whereDate('created_at', '<=', $finish)
             ->where('salable_type', ServiceSale::class)
             ->with(['client', 'user', 'club', 'salable.service', 'transaction'])
-            ->get();
-        return PurchasedPrograms::collection($sales);
+            ->get()
+            ->groupBy(function (Sale $sale) {
+                return $sale->created_at->format('Y-m-d H:i:s');
+            })
+            ->map(function ($sales) {
+                $sale = $sales->first();
+                return [
+                    'id' => $sale->id,
+                    'name' => $sale->salable->service ? $sale->salable->service->name : 'Удаленная программа',
+                    'user' => $sale->user,
+                    'club' => $sale->club,
+                    'client' => $sale->client,
+                    'amount' => $sales->reduce(function ($a, $c) {
+                            if (isset($c['transaction'])) {
+                                return $a + $c['transaction']['amount'];
+                            } else {
+                                return $a + 0;
+                            }
+                        }, 0) * -1,
+                    'date' => format_datetime($sale->created_at)
+                ];
+            });
+        return $sales->values();
     }
 
     private function getNewClientsReport($start, $finish): AnonymousResourceCollection {

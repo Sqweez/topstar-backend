@@ -30,10 +30,11 @@ class UpdateProductRequest extends FormRequest
             'product_category_id' => 'required',
             'barcode' => [
                 'sometimes',
-                Rule::unique('products')->ignore($this->id)->whereNull('deleted_at'),
+                //Rule::unique('products')->ignore($this->id)->whereNull('deleted_at'),
             ],
             'product_type_id' => 'required',
-            'attribute' => 'string'
+            'attribute' => 'string',
+            'stock_price' => 'sometimes'
         ];
     }
 }

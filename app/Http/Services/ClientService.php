@@ -3,6 +3,8 @@
 namespace App\Http\Services;
 
 use App\Models\Client;
+use App\Models\ClientCustomService;
+use App\Models\CustomService;
 use App\Models\SessionService;
 use App\Models\Trinket;
 use Illuminate\Database\Eloquent\Model;
@@ -40,6 +42,12 @@ class ClientService {
                     $oldMedia->delete();
                 }
                 $client->addMedia($payload['photo'])->toMediaCollection(Client::MEDIA_AVATAR);
+                ClientCustomService::create([
+                    'client_id' => $client->id,
+                    'user_id' => auth()->id(),
+                    'club_id' => auth()->user()->club_id,
+                    'custom_service_id' => __hardcoded(2),
+                ]);
             }
             return $client;
         });

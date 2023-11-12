@@ -13,6 +13,7 @@ use App\Http\Resources\Client\SingleClientResource;
 use App\Http\Services\ClientService;
 use App\Http\Services\TransactionService;
 use App\Models\Client;
+use App\Models\ClientCustomService;
 use App\Models\Pass;
 use App\Models\Transaction;
 use App\Repositories\Client\RetrieveSingleClient;
@@ -135,9 +136,15 @@ class ClientController extends ApiController {
         }
         $client->pass()->delete();
         $client->pass()->create(['code' => $code]);
+        $clientCustomService = ClientCustomService::create([
+            'client_id' => $client->id,
+            'user_id' => auth()->id(),
+            'club_id' => auth()->user()->club_id,
+            'custom_service_id' => __hardcoded(1),
+        ]);
         Transaction::create([
-            'transactional_type' => '',
-            'transactional_id' => null,
+            'transactional_type' => ClientCustomService::class,
+            'transactional_id' => $clientCustomService->id,
             'client_id' => $client->id,
             'user_id' => auth()->id(),
             'club_id' => auth()->user()->club_id,

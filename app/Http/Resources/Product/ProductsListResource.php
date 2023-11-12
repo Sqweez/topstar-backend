@@ -26,6 +26,7 @@ class ProductsListResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'price' => $this->price,
+            'stock_price' => blank($this->stock_price) ? null : $this->stock_price,
             'full_name' => trim(sprintf('%s %s', $this->name, ($this->attribute ?: ''))),
             'category' => $this->category,
             'product_category_id' => $this->product_category_id,
