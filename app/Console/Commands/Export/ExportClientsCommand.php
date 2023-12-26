@@ -42,6 +42,7 @@ class ExportClientsCommand extends Command
      */
     public function handle()
     {
+        ini_set('memory_limit', '512M');
         $template = IOFactory::load('excel/Импорт_клиенты.xlsx');
         $currentSheet = $template->getActiveSheet();
         $mappedClients = [];
