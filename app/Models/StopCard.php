@@ -50,7 +50,7 @@ class StopCard extends Model
     }
 
     public function user(): BelongsTo {
-        return $this->belongsTo(User::class)->select(['id', 'name']);
+        return $this->belongsTo(User::class)->select(['id', 'name'])->withTrashed();
     }
 
     public function service(): BelongsTo {
