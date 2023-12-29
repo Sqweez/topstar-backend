@@ -63,7 +63,7 @@ class ExportClientProducts extends Command
             ->chunk(1000, function ($services) use (&$currentSheet, &$recordsTotal) {
                 $_services = $services
                     ->filter(function (ProductSale $service) {
-                        return isset($service->sale->client) && isset($service->sale->transaction);
+                        return isset($service->sale->client) && isset($service->sale->transaction) && isset($service->product);
                     })
                     ->map(function (ProductSale $service) {
                         return [
@@ -75,8 +75,9 @@ class ExportClientProducts extends Command
                             'count' => 1,
                             'price' => $service->sale->transaction->amount * -1,
                             'amount_of_payment' => $service->sale->transaction->amount * -1,
-                            'type_of_payment' => $service->sale->transaction->amount * -1,
-                            'manager' => $service->sale->user->name,
+                            'type_of_payment' => 0,
+                            'type_of_payment1' => 'Наличные',
+                            'manager' => $service->sale->user->id === - 1 ? null : $service->sale->user->name,
                         ];
                     })
                     ->toArray();
