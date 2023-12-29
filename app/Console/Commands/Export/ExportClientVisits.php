@@ -40,6 +40,7 @@ class ExportClientVisits extends Command
      */
     public function handle()
     {
+        ini_set('memory_limit', '2000M');
         $this->do([1], 'СТУДИЯ');
         $this->do([2, 3], 'АТРИУМ');
     }
@@ -60,7 +61,9 @@ class ExportClientVisits extends Command
             }])
             ->with('user')
             ->whereHas('service_sale', function ($query) {
-                return $query->where('service.service_type_id', 3);
+                return $query->whereHas('service', function ($q) {
+                    return $q->where('service_type_id', 3);
+                });
             })
             ->with('service_sale.service:id,name')
             ->chunk(1000, function ($services) use (&$currentSheet, &$recordsTotal) {
@@ -80,7 +83,8 @@ class ExportClientVisits extends Command
                             'manager' => $service->user->name,
                             'trainer' => null,
                         ];
-                    });
+                    })
+                    ->toArray();
 
                 $this->line($recordsTotal);
                 $currentSheet->fromArray($_services, null, 'A' . ($recordsTotal + 3), true);
