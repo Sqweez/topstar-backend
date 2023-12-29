@@ -40,10 +40,13 @@ class ExportClientProgramsCommand extends Command
      */
     public function handle()
     {
+        ini_set('memory_limit', '2000M');
+
         $template = IOFactory::load('excel/Импорт_услуги_клиентов.xlsx');
         $currentSheet = $template->getActiveSheet();
+        $recordsTotal = 0;
 
-        $servicesW = ServiceSale::query()
+        ServiceSale::query()
             ->with(['sale' => function ($q) {
                 return $q
                     ->where('club_id', 1)
@@ -60,31 +63,49 @@ class ExportClientProgramsCommand extends Command
             }])
             ->with('visits')
             ->with('penalties')
-            ->get()
-            ->filter(function (ServiceSale $sale) {
-                return isset($sale->sale->client) && isset($sale->sale->transaction);
-            })
-            ->map(function (ServiceSale $sale) {
-                return [
-                    'id' => '',
-                    'id2' => '',
-                    'phone' => $sale->sale->client->phone,
-                    'client_fio' => $sale->sale->client->name,
-                    'contract_name' => $sale->service->name,
-                    'create_date' => format_date($sale->created_at),
-                    'payment_date' => format_date($sale->created_at),
-                    'activation_date' => format_date($sale->activated_at),
-                    'end_date' => format_date($sale->active_until),
-                    'count' => 1,
-                    'visits_left' => $sale->getRemainingVisitsAttribute(),
-                    'price' => $sale->sale->transaction->amount * -1,
-                    'amount_of_payments' => $sale->sale->transaction->amount * -1,
-                    'payment_left' => 0,
-                    'type_of_payment' => 'Наличные',
-                    'manager' => $sale->sale->user->name,
-                ];
-            })
-            ->toArray();
+            ->chunk(1000, function ($sales) use (&$currentSheet, &$recordsTotal) {
+                $_sales = $sales->filter(function ($sale) {
+                    return isset($sale->sale->client);
+                });
+                $_sales = $_sales
+                    ->map(function (ServiceSale $sale) {
+                        return [
+                            'id' => '',
+                            'id2' => '',
+                            'phone' => $sale->sale->client->phone,
+                            'client_fio' => $sale->sale->client->name,
+                            'contract_name' => $sale->service->name,
+                            'create_date' => format_date($sale->created_at),
+                            'payment_date' => format_date($sale->created_at),
+                            'activation_date' => format_date($sale->activated_at),
+                            'end_date' => format_date($sale->active_until),
+                            'count' => 1,
+                            'visits_left' => $sale->getRemainingVisitsAttribute(),
+                            'price' => $sale->sale->transaction->amount * -1,
+                            'amount_of_payments' => $sale->sale->transaction->amount * -1,
+                            'payment_left' => 0,
+                            'type_of_payment' => 'Наличные',
+                            'manager' => $sale->sale->user->name,
+                        ];
+                    })
+                    ->toArray();
+
+                $currentSheet->fromArray($_sales, null, 'A' . ($recordsTotal + 3), true);
+                $recordsTotal += count($_sales);
+            });
+
+
+        $recordsTotal = 0;
+        $excelWriter = new Xlsx($template);
+        $fileName = 'Импорт_услуги_клиентов_' . 'СТУДИЯ' . '.xlsx';
+        $path = "storage/excel/";
+        \File::ensureDirectoryExists($path);
+        $fullPath =  $path . $fileName;
+        $excelWriter->save($fullPath);
+
+        $excelWriter = null;
+
+
         $servicesA = ServiceSale::query()
             ->with(['sale' => function ($q) {
                 return $q->where('club_id', [2, 3])->with('client')->with('transaction')->with('user')->has('transaction');
@@ -97,34 +118,43 @@ class ExportClientProgramsCommand extends Command
             }])
             ->with('visits')
             ->with('penalties')
-            ->get()
-            ->filter(function (ServiceSale $sale) {
-                return isset($sale->sale->client) && isset($sale->sale->transaction);
-            })
-            ->map(function (ServiceSale $sale) {
-                return [
-                    'id' => '',
-                    'id2' => '',
-                    'phone' => $sale->sale->client->phone,
-                    'client_fio' => $sale->sale->client->name,
-                    'contract_name' => $sale->service->name,
-                    'create_date' => format_date($sale->created_at),
-                    'payment_date' => format_date($sale->created_at),
-                    'activation_date' => format_date($sale->activated_at),
-                    'end_date' => format_date($sale->active_until),
-                    'count' => 1,
-                    'visits_left' => $sale->getRemainingVisitsAttribute(),
-                    'price' => $sale->sale->transaction->amount * -1,
-                    'amount_of_payments' => $sale->sale->transaction->amount * -1,
-                    'payment_left' => 0,
-                    'type_of_payment' => 'Наличные',
-                    'manager' => $sale->sale->user->name,
-                ];
-            })
-            ->toArray();;
+            ->chunk(1000, function ($sales) use (&$currentSheet, &$recordsTotal) {
+                $_sales = $sales->filter(function ($sale) {
+                    return isset($sale->sale->client);
+                });
+                $_sales = $_sales
+                    ->map(function (ServiceSale $sale) {
+                        return [
+                            'id' => '',
+                            'id2' => '',
+                            'phone' => $sale->sale->client->phone,
+                            'client_fio' => $sale->sale->client->name,
+                            'contract_name' => $sale->service->name,
+                            'create_date' => format_date($sale->created_at),
+                            'payment_date' => format_date($sale->created_at),
+                            'activation_date' => format_date($sale->activated_at),
+                            'end_date' => format_date($sale->active_until),
+                            'count' => 1,
+                            'visits_left' => $sale->getRemainingVisitsAttribute(),
+                            'price' => $sale->sale->transaction->amount * -1,
+                            'amount_of_payments' => $sale->sale->transaction->amount * -1,
+                            'payment_left' => 0,
+                            'type_of_payment' => 'Наличные',
+                            'manager' => $sale->sale->user->name,
+                        ];
+                    })
+                    ->toArray();
 
-        $this->write($currentSheet, $template, 'АТРИУМ', $servicesA);
-        $this->write($currentSheet, $template, 'СТУДИЯ', $servicesW);
+                $currentSheet->fromArray($_sales, null, 'A' . ($recordsTotal + 3), true);
+                $recordsTotal += count($_sales);
+            });
+
+        $excelWriter = new Xlsx($template);
+        $fileName = 'Импорт_услуги_клиентов_' . 'АТРИУМ' . '.xlsx';
+        $path = "storage/excel/";
+        \File::ensureDirectoryExists($path);
+        $fullPath =  $path . $fileName;
+        $excelWriter->save($fullPath);
     }
 
     private function write($sheet, $template, $name, $input)

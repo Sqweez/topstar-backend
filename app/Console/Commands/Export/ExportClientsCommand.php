@@ -45,13 +45,13 @@ class ExportClientsCommand extends Command
         ini_set('memory_limit', '512M');
         $template = IOFactory::load('excel/Импорт_клиенты.xlsx');
         $currentSheet = $template->getActiveSheet();
-        $mappedClients = [];
-        $clients = Client::query()
+        $iteration = 0;
+        Client::query()
             ->withTrashed()
             ->with('registrar:id,name')
-            ->chunk(100, function ($clients) use (&$mappedClients) {
-                $clients->each(function (Client $client) use (&$mappedClients) {
-                    $mappedClients[] = [
+            ->chunk(100, function ($clients) use ($currentSheet, &$iteration) {
+                $mappedClients = $clients->map(function (Client $client) {
+                    return [
                         'id' => $client->id,
                         'phone' => $client->phone,
                         'client_fio' => $client->name,
@@ -71,10 +71,13 @@ class ExportClientsCommand extends Command
                         'is_archive' => !is_null($client->deleted_at) ? 1 : 0,
                         'card' => $client->cached_pass . "",
                     ];
-                });
+                })->toArray();
+
+                $cellNum = $iteration * 100 + 3;
+                $currentSheet->fromArray($mappedClients, null, 'A' . $cellNum, true);
+                $iteration++;
             });
 
-        $currentSheet->fromArray($mappedClients, null, 'A3', true);
 
         foreach (range('A', 'R') as $letter) {
             $currentSheet->getColumnDimension($letter)->setAutoSize(true);
