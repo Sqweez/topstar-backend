@@ -49,6 +49,7 @@ class ExportClientProducts extends Command
 
     private function do($clubIds, $name)
     {
+        return 0;
         $template = IOFactory::load('excel/Импорт_товаров_клиентов.xlsx');
         $currentSheet = $template->getActiveSheet();
         $recordsTotal = 0;

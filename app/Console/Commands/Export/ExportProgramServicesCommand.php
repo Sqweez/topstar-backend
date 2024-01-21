@@ -60,6 +60,16 @@ class ExportProgramServicesCommand extends Command
             })
             ->toArray();
 
+        $servicesWoman[] = [
+            'name' => 'Солярий',
+            'price' => 100,
+            'duration' => 10000,
+            'visits' => 1,
+            'do_enter' => 1,
+            'first_visit_activation' => 1,
+            'archive' => 0
+        ];
+
         $servicesAtrium = Service::query()
             ->whereServiceTypeId(3)
             ->withTrashed()
@@ -77,6 +87,16 @@ class ExportProgramServicesCommand extends Command
                 ];
             })
             ->toArray();
+
+        $servicesAtrium[] = [
+            'name' => 'Солярий',
+            'price' => 100,
+            'duration' => 10000,
+            'visits' => 1,
+            'do_enter' => 1,
+            'first_visit_activation' => 1,
+            'archive' => 0
+        ];
 
         $this->write($currentSheet, $template, 'АТРИУМ', $servicesAtrium);
         $this->write($currentSheet, $template, 'СТУДИЯ', $servicesWoman);

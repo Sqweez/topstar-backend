@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Export;
 
 use App\Models\SessionService;
+use App\Vars\ExportDates;
 use Illuminate\Console\Command;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -47,12 +48,16 @@ class ExportClientVisits extends Command
 
     private function do($clubIds, $name)
     {
+        $dates = new ExportDates();
         $template = IOFactory::load('excel/Импорт_списания_услуг.xlsx');
         $currentSheet = $template->getActiveSheet();
         $recordsTotal = 0;
         SessionService::query()
-            ->whereHas('session', function ($query) use ($clubIds) {
-                return $query->whereIn('club_id', $clubIds);
+            ->whereHas('session', function ($query) use ($clubIds, $dates) {
+                return $query
+                    ->whereDate('created_at', '>=', $dates->start)
+                    ->whereDate('created_at', '<=', $dates->finish)
+                    ->whereIn('club_id', $clubIds);
             })
             ->with(['session' => function ($q) use ($clubIds) {
                 return $q

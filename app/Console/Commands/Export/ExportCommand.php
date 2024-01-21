@@ -37,6 +37,7 @@ class ExportCommand extends Command
      */
     public function handle()
     {
+        ini_set('memory_limit', '2000M');
         $this->info('Export clients');
         $this->callCommand(ExportClientsCommand::class);
         $this->info('Export products');

@@ -4,6 +4,7 @@ namespace App\Console\Commands\Export;
 
 use App\Models\Service;
 use App\Models\ServiceSale;
+use App\Vars\ExportDates;
 use Illuminate\Console\Command;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -41,6 +42,8 @@ class ExportClientUnlimitedCommand extends Command
      */
     public function handle()
     {
+        $date = new ExportDates();
+
         ini_set('memory_limit', '2000M');
 
         $template = IOFactory::load('excel/Импорт_абонементы_клиентов.xlsx');
@@ -49,6 +52,11 @@ class ExportClientUnlimitedCommand extends Command
         $recordsTotal = 0;
 
         ServiceSale::query()
+            ->whereHas('sale', function ($q) use ($date) {
+                return $q
+                    ->whereDate('created_at', '>=', $date->start)
+                    ->whereDate('created_at', '<=', $date->finish);
+            })
             ->with(['sale' => function ($q) {
                 return $q->where('club_id', 1)->with('client')->with('transaction')->with('user');
             }])
@@ -83,7 +91,7 @@ class ExportClientUnlimitedCommand extends Command
                         'amount_of_payments' => $sale->sale->transaction->amount * -1,
                         'payment_left' => 0,
                         'type_of_payment' => 'Наличные',
-                        'manager' => $sale->sale->user->name,
+                        'manager' => '',
                     ];
                 })->toArray();
 
@@ -103,6 +111,11 @@ class ExportClientUnlimitedCommand extends Command
         $excelWriter = null;
 
         ServiceSale::query()
+            ->whereHas('sale', function ($q) use ($date) {
+                return $q
+                    ->whereDate('created_at', '>=', $date->start)
+                    ->whereDate('created_at', '<=', $date->finish);
+            })
             ->with(['sale' => function ($q) {
                 return $q->where('club_id', [2, 3])->with('client')->with('transaction')->with('user');
             }])
@@ -137,7 +150,7 @@ class ExportClientUnlimitedCommand extends Command
                         'amount_of_payments' => $sale->sale->transaction->amount * -1,
                         'payment_left' => 0,
                         'type_of_payment' => 'Наличные',
-                        'manager' => $sale->sale->user->name,
+                        'manager' => '',
                     ];
                 })->toArray();
 

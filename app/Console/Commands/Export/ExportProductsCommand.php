@@ -50,7 +50,7 @@ class ExportProductsCommand extends Command
         $productsW = Product::query()
             ->withTrashed()
             ->with(['batches' => function ($q) {
-                return $q->whereStoreId(1);
+                return $q->whereStoreId(1)->where('quantity', '>', 0);
             }])
             ->get()
             ->map(function (Product $product) {
@@ -64,12 +64,15 @@ class ExportProductsCommand extends Command
                     'archive' => is_null($product->deleted_at) ? 0 : 1,
                 ];
             })
+            ->filter(function ($item) {
+                return $item['count'] > 0;
+            })
             ->toArray();
 
         $productsA = Product::query()
             ->withTrashed()
             ->with(['batches' => function ($q) {
-                return $q->whereStoreId([2, 3]);
+                return $q->whereStoreId([2, 3])->where('quantity', '>', 0);
             }])
             ->get()
             ->map(function (Product $product) {
@@ -82,6 +85,9 @@ class ExportProductsCommand extends Command
                     'code' => $product->barcode,
                     'archive' => is_null($product->deleted_at) ? 0 : 1,
                 ];
+            })
+            ->filter(function ($item) {
+                return $item['count'] > 0;
             })
             ->toArray();
 
