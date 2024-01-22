@@ -45,6 +45,9 @@ class ExportUnlimitedServicesCommand extends Command
         $template = IOFactory::load('excel/Импорт_шаблоны_абонементов.xlsx');
         $currentSheet = $template->getActiveSheet();
         $servicesW = Service::query()
+            ->where('name', 'not like', '%test%')
+            ->where('name', 'not like', '%тест%')
+            ->where('name', '!=', '')
             ->whereServiceTypeId(1)
             ->withTrashed()
             ->whereClubId(1)
@@ -65,6 +68,9 @@ class ExportUnlimitedServicesCommand extends Command
             ->toArray();
 
         $servicesA = Service::query()
+            ->where('name', 'not like', '%test%')
+            ->where('name', 'not like', '%тест%')
+            ->where('name', '!=', '')
             ->whereServiceTypeId(1)
             ->withTrashed()
             ->whereClubId([2, 3])

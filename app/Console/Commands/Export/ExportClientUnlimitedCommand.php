@@ -95,9 +95,9 @@ class ExportClientUnlimitedCommand extends Command
                     ];
                 })->toArray();
 
-                $this->line($recordsTotal);
                 $currentSheet->fromArray($_services, null, 'A' . ($recordsTotal + 3), true);
                 $recordsTotal += count($_services);
+                $this->line($recordsTotal);
             });
 
         $recordsTotal = 0;
@@ -156,6 +156,7 @@ class ExportClientUnlimitedCommand extends Command
 
                 $currentSheet->fromArray($_services, null, 'A' . ($recordsTotal + 3), true);
                 $recordsTotal += count($_services);
+                $this->line($recordsTotal);
             });
 
         $excelWriter = new Xlsx($template);

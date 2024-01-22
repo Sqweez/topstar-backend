@@ -12,6 +12,6 @@ class ExportDates
     public function __construct()
     {
         $this->start = Carbon::create(2018, 1, 1)->startOfDay();
-        $this->finish = Carbon::create(2024, 1, 21)->endOfDay();
+        $this->finish = Carbon::create(2024, 1, 22)->endOfDay();
     }
 }

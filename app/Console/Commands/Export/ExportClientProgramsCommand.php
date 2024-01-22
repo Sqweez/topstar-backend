@@ -63,7 +63,14 @@ class ExportClientProgramsCommand extends Command
                     ->has('transaction');
             }])
             ->whereHas('service', function ($q) {
-                return $q->where('service_type_id', 3)->where('club_id', 1);
+                return $q
+                    ->where('name', 'not like', '%test%')
+                    ->where('name', 'not like', '%тест%')
+                    ->where('name', '!=', '')
+                    ->whereNotIn('id', [583, 1361, 1362, 1163, 1365, 1864, 1865, 204])
+                    ->where('price', '>', 5)
+                    ->where('service_type_id', 3)
+                    ->where('club_id', 1);
             })
             ->with(['service' => function ($q) {
                 return $q->where('service_type_id', 3)->where('club_id', 1);
@@ -99,6 +106,7 @@ class ExportClientProgramsCommand extends Command
 
                 $currentSheet->fromArray($_sales, null, 'A' . ($recordsTotal + 3), true);
                 $recordsTotal += count($_sales);
+                $this->line($recordsTotal);
             });
 
 
@@ -123,7 +131,14 @@ class ExportClientProgramsCommand extends Command
                 return $q->where('club_id', [2, 3])->with('client')->with('transaction')->with('user')->has('transaction');
             }])
             ->whereHas('service', function ($q) {
-                return $q->where('service_type_id', 3)->where('club_id', [2, 3]);
+                return $q
+                    ->where('name', 'not like', '%test%')
+                    ->where('name', 'not like', '%тест%')
+                    ->where('name', '!=', '')
+                    ->whereNotIn('id', [583, 1361, 1362, 1163, 1365, 1864, 1865, 204])
+                    ->where('price', '>', 5)
+                    ->where('service_type_id', 3)
+                    ->where('club_id', [2, 3]);
             })
             ->with(['service' => function ($q) {
                 return $q->where('service_type_id', 3)->where('club_id', [2, 3]);
@@ -136,6 +151,7 @@ class ExportClientProgramsCommand extends Command
                 });
                 $_sales = $_sales
                     ->map(function (ServiceSale $sale) {
+                        $this->line($sale->sale->client->name);
                         return [
                             'id' => '',
                             'id2' => '',
@@ -159,6 +175,7 @@ class ExportClientProgramsCommand extends Command
 
                 $currentSheet->fromArray($_sales, null, 'A' . ($recordsTotal + 3), true);
                 $recordsTotal += count($_sales);
+                $this->line($recordsTotal);
             });
 
         $excelWriter = new Xlsx($template);

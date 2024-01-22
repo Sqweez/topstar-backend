@@ -67,7 +67,13 @@ class ExportClientVisits extends Command
             ->with('user')
             ->whereHas('service_sale', function ($query) {
                 return $query->whereHas('service', function ($q) {
-                    return $q->where('service_type_id', 3);
+                    return $q
+                        ->where('name', 'not like', '%test%')
+                        ->where('name', 'not like', '%тест%')
+                        ->where('name', '!=', '')
+                        ->whereNotIn('id', [583, 1361, 1362, 1163, 1365, 1864, 1865, 204])
+                        ->where('price', '>', 5)
+                        ->where('service_type_id', 3);
                 });
             })
             ->with('service_sale.service:id,name')

@@ -43,6 +43,11 @@ class ExportProgramServicesCommand extends Command
         $template = IOFactory::load('excel/Импорт_шаблоны_услуг.xlsx');
         $currentSheet = $template->getActiveSheet();
         $servicesWoman = Service::query()
+            ->where('name', 'not like', '%test%')
+            ->where('name', 'not like', '%тест%')
+            ->where('name', '!=', '')
+            ->whereNotIn('id', [583, 1361, 1362, 1163, 1365, 1864, 1865, 204])
+            ->where('price', '>', 5)
             ->whereServiceTypeId(3)
             ->withTrashed()
             ->whereClubId(1)
@@ -60,20 +65,16 @@ class ExportProgramServicesCommand extends Command
             })
             ->toArray();
 
-        $servicesWoman[] = [
-            'name' => 'Солярий',
-            'price' => 100,
-            'duration' => 10000,
-            'visits' => 1,
-            'do_enter' => 1,
-            'first_visit_activation' => 1,
-            'archive' => 0
-        ];
-
         $servicesAtrium = Service::query()
+            ->where('name', 'not like', '%test%')
+            ->where('name', 'not like', '%тест%')
+            ->where('name', '!=', '')
+            ->whereNotIn('id', [583, 1361, 1362, 1163, 1365, 1864, 1865, 204])
+            ->where('price', '>', 5)
             ->whereServiceTypeId(3)
             ->withTrashed()
             ->whereClubId([2, 3])
+            ->where('is_active', true)
             ->get()
             ->map(function (Service $service) {
                 return [
@@ -87,16 +88,6 @@ class ExportProgramServicesCommand extends Command
                 ];
             })
             ->toArray();
-
-        $servicesAtrium[] = [
-            'name' => 'Солярий',
-            'price' => 100,
-            'duration' => 10000,
-            'visits' => 1,
-            'do_enter' => 1,
-            'first_visit_activation' => 1,
-            'archive' => 0
-        ];
 
         $this->write($currentSheet, $template, 'АТРИУМ', $servicesAtrium);
         $this->write($currentSheet, $template, 'СТУДИЯ', $servicesWoman);

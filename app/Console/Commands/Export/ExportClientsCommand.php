@@ -51,6 +51,7 @@ class ExportClientsCommand extends Command
             ->with('registrar:id,name')
             ->chunk(100, function ($clients) use ($currentSheet, &$iteration) {
                 $mappedClients = $clients->map(function (Client $client) {
+                    $this->line($client->name);
                     return [
                         'id' => $client->id,
                         'phone' => $client->phone,
