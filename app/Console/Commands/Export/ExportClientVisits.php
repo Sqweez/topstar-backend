@@ -91,7 +91,7 @@ class ExportClientVisits extends Command
                             'service_name' => $service->service_sale->service->name,
                             'date_enter' => format_date($service->created_at),
                             'date_exit' => format_date($service->created_at),
-                            'manager' => $service->user->name,
+                            'manager' => '',
                             'trainer' => null,
                         ];
                     })
