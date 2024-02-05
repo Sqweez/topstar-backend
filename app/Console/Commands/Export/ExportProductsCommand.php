@@ -50,7 +50,7 @@ class ExportProductsCommand extends Command
         $productsW = Product::query()
             ->withTrashed()
             ->with(['batches' => function ($q) {
-                return $q->whereStoreId(1)->where('quantity', '>', 0);
+                return $q->whereStoreId(1);
             }])
             ->get()
             ->map(function (Product $product) {
@@ -72,7 +72,7 @@ class ExportProductsCommand extends Command
         $productsA = Product::query()
             ->withTrashed()
             ->with(['batches' => function ($q) {
-                return $q->whereStoreId([2, 3])->where('quantity', '>', 0);
+                return $q->whereStoreId([2, 3]);
             }])
             ->get()
             ->map(function (Product $product) {

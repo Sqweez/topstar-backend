@@ -38,16 +38,22 @@ class ExportClientsCommand extends Command
     /**
      * Execute the console command.
      *
-     * @throws Exception
      */
     public function handle()
     {
         ini_set('memory_limit', '512M');
+        $this->do([1], 'СТУДИЯ');
+        $this->do([2, 3], 'АТРИУМ');
+    }
+
+    private function do($clubIds, $name)
+    {
         $template = IOFactory::load('excel/Импорт_клиенты.xlsx');
         $currentSheet = $template->getActiveSheet();
         $iteration = 0;
         Client::query()
             ->withTrashed()
+            ->whereIn('club_id', $clubIds)
             ->with('registrar:id,name')
             ->chunk(100, function ($clients) use ($currentSheet, &$iteration) {
                 $mappedClients = $clients->map(function (Client $client) {
@@ -85,7 +91,7 @@ class ExportClientsCommand extends Command
         }
 
         $excelWriter = new Xlsx($template);
-        $fileName = 'Импорт_клиенты.xlsx';
+        $fileName = 'Импорт_клиенты_'. $name .'.xlsx';
         $path = "storage/excel/";
         \File::ensureDirectoryExists($path);
         $fullPath =  $path . $fileName;
